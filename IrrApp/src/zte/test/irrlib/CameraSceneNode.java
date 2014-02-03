@@ -12,7 +12,7 @@ public class CameraSceneNode extends SceneNode{
 	}
 	
 	public void setRendererClippingPlaneLimits(double nearClip, double farClip){
-		nativeSetClipPlane(nearClip, farClip, getID());
+		nativeSetClipPlain(nearClip, farClip, getID());
 	}
 	
 	protected Vector3d mLookAt;
@@ -23,5 +23,5 @@ public class CameraSceneNode extends SceneNode{
 	}
 	
 	private native void nativeSetLookAt(double x, double y, double z, int id);
-	private native void nativeSetClipPlane(double nearClip, double farClip, int id);
+	private native void nativeSetClipPlain(double nearClip, double farClip, int id);
 }
