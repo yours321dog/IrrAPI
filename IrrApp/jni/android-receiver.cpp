@@ -2,7 +2,7 @@
 #include <android/log.h>
 
 
-extern int gAppAlive;
+int gAppAlive;
 
 bool AndroidEventReceiver::OnEvent(const SEvent& event)
 {

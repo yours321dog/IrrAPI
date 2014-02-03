@@ -71,26 +71,6 @@ extern "C"
 		else return -1;
 	}
 	
-	int Java_zte_test_irrlib_NodeFactory_nativeAddAnimatedSceneNode(
-		JNIEnv*  env, jobject defaultObj, jstring path, jdouble x, jdouble y, jdouble z, jint id, jint parent)
-	{
-		core::vector3df pos = core::vector3df(x,y,z);
-		
-		const char *msg = env->GetStringUTFChars(path,0);
-		core::stringc meshPath = msg;
-		scene::IAnimatedMesh* mesh = smgr->getMesh(meshPath.c_str());
-
-		scene::IAnimatedMeshSceneNode* node = NULL;
-		if(parent != 0){
-			scene::ISceneNode* parentNode = smgr->getSceneNodeFromId(parent);
-			node = smgr->addAnimatedMeshSceneNode(mesh,parentNode,id,pos);
-		}
-		else node = smgr->addAnimatedMeshSceneNode(mesh,0,id,pos);
-		
-		if(node) return 0;
-		else return -1;
-	}
-	
 	int Java_zte_test_irrlib_NodeFactory_nativeAddTextNode(
 		JNIEnv*  env, jobject defaultObj, jstring text, jdouble x, jdouble y, jdouble z, jdouble size, jint id, jint parent)
 	{

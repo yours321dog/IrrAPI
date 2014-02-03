@@ -17,9 +17,9 @@ IrrlichtDevice *device;
 IVideoDriver* driver;
 ISceneManager* smgr;
 
-int  gWindowWidth  = 640;               //灞忓箷瀹藉害
-int  gWindowHeight = 480;               //灞忓箷楂樺害
-stringc gSdCardPath = "/sdcard/";       //SD鍗¤矾寰�
+int  gWindowWidth  = 640;
+int  gWindowHeight = 480;
+stringc gSdCardPath = "/sdcard/";
 
 extern video::SColor backColor;
 extern "C"
@@ -33,7 +33,7 @@ extern "C"
 		device = createDevice( video::EDT_OGLES1, dimension2d<u32>(gWindowWidth, gWindowHeight), 16, false, false, false, 0);
 
 		
-		//杈撳嚭鎻愮ず淇℃伅
+		//鏉堟挸鍤幓鎰仛娣団剝浼�
 		__android_log_print(ANDROID_LOG_INFO, "Irrlicht", "createDevice r=%d w=%d h=%d", device, gWindowWidth, gWindowHeight);
 
 		if (!device)
@@ -96,16 +96,7 @@ extern "C"
 		__android_log_print(ANDROID_LOG_INFO, "Irrlicht", "end scene");
 		driver->endScene();
 	}
-	
-	void Java_zte_test_irrlib_Device_nativeSetClipPlane(
-		JNIEnv *env, jobject defaultObj, jdouble nearClip, jdouble farClip)
-	{
-		scene::ICameraSceneNode* camera = smgr->getActiveCamera();
-		if(camera){
-			camera->setNearValue(nearClip);
-			camera->setFarValue(farClip);
-		}
-	}
+
 	
 	double Java_zte_test_irrlib_Device_nativeGetFPS(
 		JNIEnv *env, jobject defaultObj)

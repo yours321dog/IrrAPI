@@ -50,7 +50,6 @@ public class SceneNode {
 		mark();
 		
 		mNodeType = TYPE_COMMON;
-		setTouchable(false);
 	}
 	
 	int getID() {return id;}
@@ -64,11 +63,6 @@ public class SceneNode {
 	protected Vector3d []mRotation;
 	protected Vector3d []mScale;
 	protected int mNodeType;
-	protected boolean mIsTouchable;
-	
-	public void setTouchable(boolean flag){
-		mIsTouchable = flag;
-	}
 	
 	public int getNodeType(){
 		return mNodeType;
@@ -115,7 +109,7 @@ public class SceneNode {
 		}
 		else return;
 		
-		nativeSetTranslation(mPosition[1].x, mPosition[1].y, mPosition[1].z, getID());
+		nativeSetPosition(mPosition[1].x, mPosition[1].y, mPosition[1].z, getID());
 	}
 	public void setScale(Vector3d para, int mode){
 		if (mode == ABSOLUTE_TRANSFORM){
@@ -180,7 +174,6 @@ public class SceneNode {
 	private native void nativeSetParent(int parent, int id);
 	private native void nativeSetVisible(boolean isVisible, int id);
 	private native void nativeSetRotation(double x, double y, double z, int id);
-	private native void nativeSetTranslation(double x, double y, double z, int id);//name changed in 1.24
 	private native void nativeSetScale(double x, double y, double z, int id);
 	private native void nativeSetPosition(double x, double y, double z, int id);
 
@@ -190,10 +183,19 @@ public class SceneNode {
 	private native void nativeAddFlyStraightAnimator(double sx, double sy, double sz,
 			double dx, double dy, double dz, double time, int id);
 	private native void nativeAddDleeteAnimator(int ms, int id);//added in 1.24
-	
-	//deprecated in 1.24
-	//private native void nativeSetTexture(String path, int id);
-	//private native void nativeSetTexture(String path, rect.left, rect.up, rect.right, rect.down, int id);
-	//added in 1.24
+
 	private native void nativeRemoveAllAnimator(int id);
+	
+	//only available with mesh node below.
+	protected native void nativeSetTouchable(boolean flag, int id);
+	protected native void nativeSetBBoxVisibility(boolean flag);
+	
+	protected native void nativeSetAmbientColor(int r, int g, int b, int a, int materialID, int id);
+	protected native void nativeSetDiffuseColor(int r, int g, int b, int a, int materialID, int id);
+	protected native void nativeSetEmissiveColor(int r, int g, int b, int a, int materialID, int id);
+	protected native void nativeSetSpecularColor(int r, int g, int b, int a, int materialID, int id);
+	protected native void nativeSetShininess(double shininess, int materialID, int id);
+	
+	protected native int nativeSetTexture(String path, int materialID, int id);
+	protected native int nativeAddTextureAnimator(String[] path, int timePerFrame, boolean loop, int id);
 }
