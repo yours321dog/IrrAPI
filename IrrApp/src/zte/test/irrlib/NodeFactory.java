@@ -83,18 +83,6 @@ public class NodeFactory {
 		return node;
 	}
 	
-	public SceneNode addAnimatedSceneNode(String path, Vector3d pos, SceneNode parent){
-		SceneNode node = new SceneNode();
-		if (nativeAddAnimatedSceneNode(mDevice.getPathPrefix() + path, pos.x, pos.y, pos.z, getNodeID(node), getNodeID(parent)) != 0)
-			return null;
-		
-		node.setPosition(pos);
-		node.setParent(parent);
-		node.mark();
-		registerNode(node);
-		return node;
-	}
-	
 	public SceneNode addTextNode(String text, Vector3d pos, double size, SceneNode parent){
 		SceneNode node = new SceneNode();
 		if (nativeAddTextNode(text, pos.x, pos.y, pos.z, size, getNodeID(node), getNodeID(parent)) != 0)
@@ -190,7 +178,6 @@ public class NodeFactory {
 	private native int nativeAddEmptySceneNode(double x, double y, double z, int id, int parent);
 	private native int nativeAddCubeSceneNode(double x, double y, double z, double sizex, double sizey, double sizez, int id, int parent);
 	private native int nativeAddMeshSceneNode(String path, double x, double y, double z, int id, int parent);
-	private native int nativeAddAnimatedSceneNode(String path, double x, double y, double z, int id, int parent);
 	private native int nativeAddTextNode(String text, double x, double y, double z, double size, int id, int parent);
 	
 	//modify in 1.24

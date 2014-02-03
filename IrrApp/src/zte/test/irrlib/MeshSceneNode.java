@@ -10,6 +10,11 @@ public class MeshSceneNode extends SceneNode implements MaterialOwner{
 	protected boolean mIsBBoxVisible = false;
 	
 	@Override
+	public void setTouchable(boolean flag){
+		nativeSetTouchable(flag, getID());
+	}
+	
+	@Override
 	public void setAmbientColor(Color4i color, int materialID) {
 		nativeSetAmbientColor(color.r(), color.g(), color.b(), color.a(), materialID, getID());
 	}
@@ -52,13 +57,4 @@ public class MeshSceneNode extends SceneNode implements MaterialOwner{
 		mIsBBoxVisible = flag;
 		nativeSetBBoxVisibility(flag);
 	}
-
-	private native void nativeSetAmbientColor(int r, int g, int b, int a, int materialID, int id);
-	private native void nativeSetDiffuseColor(int r, int g, int b, int a, int materialID, int id);
-	private native void nativeSetEmissiveColor(int r, int g, int b, int a, int materialID, int id);
-	private native void nativeSetSpecularColor(int r, int g, int b, int a, int materialID, int id);
-	private native void nativeSetShininess(double shininess, int materialID, int id);
-	private native int nativeSetTexture(String path, int materialID, int id);
-	private native int nativeAddTextureAnimator(String[] path, int timePerFrame, boolean loop, int id);
-	private native void nativeSetBBoxVisibility(boolean flag);
 }

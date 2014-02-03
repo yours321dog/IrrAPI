@@ -11,6 +11,10 @@ public class CameraSceneNode extends SceneNode{
 		id = node.getID();
 	}
 	
+	public void setRendererClippingPlaneLimits(double nearClip, double farClip){
+		nativeSetClipPlane(nearClip, farClip, getID());
+	}
+	
 	protected Vector3d mLookAt;
 	
 	public void setLookAt(Vector3d vec){
@@ -19,4 +23,5 @@ public class CameraSceneNode extends SceneNode{
 	}
 	
 	private native void nativeSetLookAt(double x, double y, double z, int id);
+	private native void nativeSetClipPlane(double nearClip, double farClip, int id);
 }

@@ -27,3 +27,15 @@ extern "C"
 		camera->setTarget(core::vector3df(x,y,z));
 	}
 }
+
+
+void Java_zte_test_irrlib_CameraSceneNode_nativeSetClipPlane(
+	JNIEnv *env, jobject defaultObj, jdouble nearClip, jdouble farClip, jint id)
+{
+	scene::ICameraSceneNode* camera =
+		(scene::ICameraSceneNode*)smgr->getSceneNodeFromId(id);
+	if(camera){
+		camera->setNearValue(nearClip);
+		camera->setFarValue(farClip);
+	}
+}

@@ -10,6 +10,7 @@ public interface MaterialOwner {
 	
 	//return 0 if succeed
 	int setTexture(String path, int materialID);
-	
 	int addTextureAnimator(String[] path, int timePerFrame, boolean loop);
+	
+	void setTouchable(boolean flag);
 }

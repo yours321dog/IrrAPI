@@ -109,10 +109,6 @@ public class Device{
 		return new Vector2i(mWidth, mHeight);
 	}
 	
-	public void setRendererClippingPlaneLimits(double nearClip, double farClip){
-		nativeSetClipPlain(nearClip, farClip);
-	}
-	
 	public double getFPS(){
 		return nativeGetFPS();
 	}
@@ -148,6 +144,5 @@ public class Device{
 	native void nativeBeginScene();
 	native void nativeEndScene();
 	
-	private native void nativeSetClipPlain(double nearClip, double farClip);
 	private native double nativeGetFPS();
 }
