@@ -5,3 +5,5 @@
 /obj
 /gen
 /src.zip
+/project.properties
+/.classpath
