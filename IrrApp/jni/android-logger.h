@@ -3,11 +3,18 @@
 #define __CANDROID_LOGGER_H_INCLUDED__
 
 #include <android/log.h>
-
 #include <irrlicht.h>
+#include <sys/time.h>
 
 using namespace irr;
 
+static long _getTime(void)
+{
+    struct timeval  now;
+
+    gettimeofday(&now, NULL);
+    return (long)(now.tv_sec*1000 + now.tv_usec/1000);
+}
 
 class CAndroidLogger : public ILogger {
 private:

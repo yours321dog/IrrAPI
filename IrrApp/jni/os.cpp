@@ -170,7 +170,7 @@ namespace os
 	void Printer::log(const c8* message, ELOG_LEVEL ll)
 	{
 #ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
-        __android_log_print(ANDROID_LOG_INFO, "log", message);
+        __android_log_print(ANDROID_LOG_INFO, "log", "%s", message);
 #else
 		if (Logger)
 			Logger->log(message, ll);
@@ -181,7 +181,7 @@ namespace os
 	{
 #ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
         core::stringc msg(message);
-        __android_log_print(ANDROID_LOG_INFO, "log", msg.c_str());
+        __android_log_print(ANDROID_LOG_INFO, "log", "%s", msg.c_str());
 #else
 		if (Logger)
 			Logger->log(message, ll);
@@ -191,7 +191,7 @@ namespace os
 	void Printer::log(const c8* message, const c8* hint, ELOG_LEVEL ll)
 	{
 #ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
-        __android_log_print(ANDROID_LOG_INFO, "log", message);
+        __android_log_print(ANDROID_LOG_INFO, "log", "%s", message);
 #else
 		if (Logger)
 			Logger->log(message, hint, ll);
@@ -201,7 +201,7 @@ namespace os
 	void Printer::log(const c8* message, const io::path& hint, ELOG_LEVEL ll)
 	{
 #ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
-        __android_log_print(ANDROID_LOG_INFO, "log", message);
+        __android_log_print(ANDROID_LOG_INFO, "log", "%s", message);
 #else
 		if (Logger)
 			Logger->log(message, hint.c_str(), ll);

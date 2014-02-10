@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <android/log.h>
 #include <irrlicht.h>
+#include <importgl.h>
 
 using namespace irr;
 using namespace core;
@@ -8,10 +9,6 @@ using namespace scene;
 using namespace video;
 using namespace io;
 using namespace gui;
-
-// global variables
-int importGLInit();
-void nativeDrawIteration();
 
 IrrlichtDevice *device;
 IVideoDriver* driver;
@@ -33,7 +30,6 @@ extern "C"
 		device = createDevice( video::EDT_OGLES1, dimension2d<u32>(gWindowWidth, gWindowHeight), 16, false, false, false, 0);
 
 		
-		//鏉堟挸鍤幓鎰仛娣団剝浼�
 		__android_log_print(ANDROID_LOG_INFO, "Irrlicht", "createDevice r=%d w=%d h=%d", device, gWindowWidth, gWindowHeight);
 
 		if (!device)
@@ -72,7 +68,6 @@ extern "C"
 	void Java_zte_test_irrlib_Device_nativeDrawIteration(
 		JNIEnv *env, jobject defaultObj)
 	{
-		nativeDrawIteration();
 	/*
 		device->run();
 		driver->beginScene(true,true,video::SColor(100,100,0,100));

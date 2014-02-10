@@ -16,7 +16,7 @@
 
 #ifndef GL_BGRA
 // we need to do this for the IMG_BGRA8888 extension
-int GL_BGRA=GL_RGBA;
+extern int GL_BGRA;
 #endif
 
 #include "COGLESTexture.h"
