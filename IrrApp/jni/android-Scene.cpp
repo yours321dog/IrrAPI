@@ -206,9 +206,9 @@ extern "C"
 
 	int Java_zte_irrlib_scene_Scene_nativeAddCameraSceneNode(
 		JNIEnv*  env, jobject defaultObj, jdouble px, jdouble py, jdouble pz,
-		jdouble lx, jdouble ly, jdouble lz, jint id, jint parent)
+		jdouble lx, jdouble ly, jdouble lz, jboolean isActive, jint id, jint parent)
 	{
-		__android_log_print(ANDROID_LOG_INFO, TAG, "add camera scene node");
+		
 		core::vector3df pos = core::vector3df(px,py,pz);
 		core::vector3df lookat = core::vector3df(lx,ly,lz);
 
@@ -219,7 +219,12 @@ extern "C"
 		}
 		else node = smgr->addCameraSceneNode(0,pos,lookat,id);
 
-		if(node) return 0;
+		if(node)
+		{
+			if (isActive) smgr->setActiveCamera(node);
+			__android_log_print(ANDROID_LOG_INFO, TAG, "new camera, id: %d, parent: %d", id, parent);
+			return 0;
+		}
 		else return -1;
 	}
 
