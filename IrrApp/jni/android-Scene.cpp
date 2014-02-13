@@ -208,9 +208,9 @@ extern "C"
 		JNIEnv*  env, jobject defaultObj, jdouble px, jdouble py, jdouble pz,
 		jdouble lx, jdouble ly, jdouble lz, jint id, jint parent)
 	{
-		__android_log_print(ANDROID_LOG_INFO, TAG, "add camera scene node");
 		core::vector3df pos = core::vector3df(px,py,pz);
 		core::vector3df lookat = core::vector3df(lx,ly,lz);
+		__android_log_print(ANDROID_LOG_INFO, TAG, "camera node added? id: %d, parent: %d", id, parent);
 
 		scene::ICameraSceneNode* node = NULL;
 		if(parent != 0){
@@ -218,8 +218,11 @@ extern "C"
 			node = smgr->addCameraSceneNode(parentNode,pos,lookat,id);
 		}
 		else node = smgr->addCameraSceneNode(0,pos,lookat,id);
-
-		if(node) return 0;
+		
+		if(node){
+			__android_log_print(ANDROID_LOG_INFO, TAG, "camera node added. id: %d", node->getID());
+			return 0;
+		}
 		else return -1;
 	}
 

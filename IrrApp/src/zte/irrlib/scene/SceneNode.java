@@ -35,7 +35,7 @@ public class SceneNode {
 	}
 	
 	SceneNode() {
-		this.Id = mScene.getNewId();
+		Id = mScene.getNewId();
 		
 		//第一个是当前值，第二个是标记值
 		mPosition = new Vector3d[2];

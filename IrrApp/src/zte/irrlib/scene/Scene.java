@@ -51,7 +51,9 @@ public class Scene {
 		if (node == null){
 			return 0;
 		}
-		else return node.getId();
+		else {
+			return node.getId();
+		}
 	}
 	
 	int getNewId(){
@@ -126,7 +128,8 @@ public class Scene {
 	
 	public CameraSceneNode addCameraSceneNode(Vector3d pos, Vector3d lookAt, boolean isActive, SceneNode parent){
 		CameraSceneNode node = new CameraSceneNode();
-		if (nativeAddCameraSceneNode(pos.x, pos.y, pos.z, lookAt.x, lookAt.y, lookAt.z, isActive, getId(node), getId(parent)) != 0)
+		WLog.i(" " + getId(node));
+		if (nativeAddCameraSceneNode(pos.x, pos.y, pos.z, lookAt.x, lookAt.y, lookAt.z, false, 9, 3/*getId(node), getId(parent)*/) != 0)
 			return null;
 		
 		node.setPosition(pos);
@@ -222,7 +225,7 @@ public class Scene {
 		mNodeList.clear();
 		nativeClear();
 		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		_NewId = 0;
+		//_NewId = 0;
 	}
 	
 	//this method will *NOT* automatically register node in native engine

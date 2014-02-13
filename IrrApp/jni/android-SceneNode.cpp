@@ -63,7 +63,7 @@ extern "C"
 		if (node){
 			node->setPosition(core::vector3df(x,y,z));
 		}
-		else __android_log_print(ANDROID_LOG_WARN, TAG, "node(id :%d) not found!", id);
+		else __android_log_print(ANDROID_LOG_WARN, TAG, "node(id :%d) not found! abandon setPosition", id);
 	}
 	
 	void Java_zte_irrlib_scene_SceneNode_nativeAddRotationAnimator(
