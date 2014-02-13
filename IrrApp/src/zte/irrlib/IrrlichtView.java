@@ -5,17 +5,24 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
+import zte.irrapp.WLog;
+
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.AttributeSet;
 import android.util.Log;
 
 public class IrrlichtView extends GLSurfaceView {
 
 	public final String TAG = "IrrlichtView";
 	
-	public IrrlichtView(Context context) {
+	public IrrlichtView(Context context) {		
 		super(context);
+	}
+	
+	public IrrlichtView(Context context, AttributeSet attrs) {
+		super(context, attrs);
 	}
 	
 	public void setRecommendEGLConfigChooser(int sampleLevel){
