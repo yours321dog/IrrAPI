@@ -16,7 +16,7 @@ extern ISceneManager* smgr;
 
 extern "C"
 {
-	void Java_zte_test_irrlib_MeshSceneNode_nativeSetBBoxVisibility(
+	void Java_zte_irrlib_scene_MeshSceneNode_nativeSetBBoxVisibility(
 		JNIEnv *env, jobject defaultObj, jboolean flag)
 	{
 		/*

@@ -16,7 +16,7 @@ extern ISceneManager* smgr;
 
 extern "C"
 {
-	int Java_zte_test_irrlib_AnimateMeshSceneNode_nativeGetStartFrame(
+	int Java_zte_irrlib_scene_AnimateMeshSceneNode_nativeGetStartFrame(
 		JNIEnv *env, jobject defaultObj, jint id)
 	{
 		scene::IAnimatedMeshSceneNode* node = 
@@ -24,7 +24,7 @@ extern "C"
 		return node->getStartFrame();
 	}
 	
-	int Java_zte_test_irrlib_AnimateMeshSceneNode_nativeGetEndFrame(
+	int Java_zte_irrlib_scene_AnimateMeshSceneNode_nativeGetEndFrame(
 		JNIEnv *env, jobject defaultObj, jint id)
 	{
 		scene::IAnimatedMeshSceneNode* node = 
@@ -32,7 +32,7 @@ extern "C"
 		return node->getEndFrame();
 	}
 	
-	int Java_zte_test_irrlib_AnimateMeshSceneNode_nativeGetFrameNumber(
+	int Java_zte_irrlib_scene_AnimateMeshSceneNode_nativeGetFrameNumber(
 		JNIEnv *env, jobject defaultObj, jint id)
 	{
 		scene::IAnimatedMeshSceneNode* node = 
@@ -40,7 +40,7 @@ extern "C"
 		return node->getFrameNr();
 	}
 	
-	int Java_zte_test_irrlib_AnimateMeshSceneNode_nativeSetCurrentFrame(
+	int Java_zte_irrlib_scene_AnimateMeshSceneNode_nativeSetCurrentFrame(
 		JNIEnv *env, jobject defaultObj, jint frame, jint id)
 	{
 		scene::IAnimatedMeshSceneNode* node = 
@@ -52,7 +52,7 @@ extern "C"
 		return 0;
 	}
 	
-	void Java_zte_test_irrlib_AnimateMeshSceneNode_nativeSetAnimationSpeed(
+	void Java_zte_irrlib_scene_AnimateMeshSceneNode_nativeSetAnimationSpeed(
 		JNIEnv *env, jobject defaultObj, jdouble fps, jint id)
 	{
 		scene::IAnimatedMeshSceneNode* node = 
@@ -60,7 +60,7 @@ extern "C"
 		node->setAnimationSpeed(fps);
 	}
 	
-	void Java_zte_test_irrlib_AnimateMeshSceneNode_nativeSetLoopMode(
+	void Java_zte_irrlib_scene_AnimateMeshSceneNode_nativeSetLoopMode(
 		JNIEnv *env, jobject defaultObj, jboolean loop, jint id)
 	{
 		scene::IAnimatedMeshSceneNode* node = 

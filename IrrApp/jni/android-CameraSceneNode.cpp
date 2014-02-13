@@ -16,7 +16,7 @@ extern ISceneManager* smgr;
 
 extern "C"
 {
-	void Java_zte_test_irrlib_CameraSceneNode_nativeSetLookAt(
+	void Java_zte_irrlib_scene_CameraSceneNode_nativeSetLookAt(
 		JNIEnv *env, jobject defaultObj, jdouble x, jdouble y, jdouble z, jint id)
 	{
 		scene::ICameraSceneNode* camera = 
@@ -29,7 +29,7 @@ extern "C"
 }
 
 
-void Java_zte_test_irrlib_CameraSceneNode_nativeSetClipPlane(
+void Java_zte_irrlib_scene_CameraSceneNode_nativeSetClipPlane(
 	JNIEnv *env, jobject defaultObj, jdouble nearClip, jdouble farClip, jint id)
 {
 	scene::ICameraSceneNode* camera =

@@ -18,7 +18,7 @@ extern "C"
 {
 	//zhe te me shi shen me yi si? by roy.
 	/*amazing when used with textures*/
-	void Java_zte_test_irrlib_BillboardSceneNode_nativeSetColor(
+	void Java_zte_irrlib_scene_BillboardSceneNode_nativeSetColor(
 		JNIEnv *env, jobject defaultObj, jint r1, jint g1, jint b1, jint a1,
 		jint r2, jint g2, jint b2, jint a2, jint id)
 	{

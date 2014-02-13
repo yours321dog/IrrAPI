@@ -16,7 +16,7 @@ extern ISceneManager* smgr;
 
 extern "C"
 {
-	void Java_zte_test_irrlib_SceneNode_nativeSetParent(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetParent(
 		JNIEnv *env, jobject defaultObj, jint parent, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
@@ -27,42 +27,42 @@ extern "C"
 		}
 	}
 	
-	void Java_zte_test_irrlib_SceneNode_nativeSetVisible(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetVisible(
 		JNIEnv*  env, jobject defaultObj, jboolean isVisible, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
 		node->setVisible(isVisible);
 	}
 	
-	void Java_zte_test_irrlib_SceneNode_nativeSetRotation(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetRotation(
 		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
 		node->setRotation(core::vector3df(x,y,z));
 	}
 	
-	void Java_zte_test_irrlib_SceneNode_nativeSetTranslation(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetTranslation(
 		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
 		node->setPosition(core::vector3df(x,y,z));
 	}
 	
-	void Java_zte_test_irrlib_SceneNode_nativeSetScale(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetScale(
 		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
 		node->setScale(core::vector3df(x,y,z));
 	}
 	
-	void Java_zte_test_irrlib_SceneNode_nativeSetPosition(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetPosition(
 		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
 		node->setPosition(core::vector3df(x,y,z));
 	}
 	
-	void Java_zte_test_irrlib_SceneNode_nativeAddRotationAnimator(
+	void Java_zte_irrlib_scene_SceneNode_nativeAddRotationAnimator(
 		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
@@ -72,7 +72,7 @@ extern "C"
 		anim->drop();
 	}
 	
-	void Java_zte_test_irrlib_SceneNode_nativeAddFlyCircleAnimator(
+	void Java_zte_irrlib_scene_SceneNode_nativeAddFlyCircleAnimator(
 		JNIEnv*  env, jobject defaultObj, jdouble cx, jdouble cy, jdouble cz,
 		jdouble radius, jdouble speed, jdouble ax, jdouble ay, jdouble az, jint id)
 	{
@@ -87,7 +87,7 @@ extern "C"
 		anim->drop();
 	}
 	
-	void Java_zte_test_irrlib_SceneNode_nativeAddFlyStraightAnimator(
+	void Java_zte_irrlib_scene_SceneNode_nativeAddFlyStraightAnimator(
 		JNIEnv*  env, jobject defaultObj, jdouble sx, jdouble sy, jdouble sz,
 		jdouble dx, jdouble dy, jdouble dz, jdouble time, jint id)
 	{
@@ -102,7 +102,7 @@ extern "C"
 		anim->drop();
 	}
 	
-	void Java_zte_test_irrlib_SceneNode_nativeAddDeleteAnimator(
+	void Java_zte_irrlib_scene_SceneNode_nativeAddDeleteAnimator(
 		JNIEnv *env, jobject defaultObj, jint ms, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
@@ -113,14 +113,14 @@ extern "C"
 		anim->drop();
 	}
 	
-	void Java_zte_test_irrlib_SceneNode_nativeRemoveAllAnimator(
+	void Java_zte_irrlib_scene_SceneNode_nativeRemoveAllAnimator(
 		JNIEnv *env, jobject defaultObj, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
 		node->removeAnimators();
 	}
 	
-	void Java_zte_test_irrlib_SceneNode_nativeSetTouchable(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetTouchable(
 		JNIEnv *env, jobject defaultObj, jboolean flag, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
@@ -159,7 +159,7 @@ extern "C"
 		}
 	}
 
-	void Java_zte_test_irrlib_SceneNode_nativeSetAmbientColor(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetAmbientColor(
 		JNIEnv *env, jobject defaultObj, jint r, jint g, jint b, jint a, jint materialID, jint id)
 	{
 		scene::ISceneNode* node =
@@ -167,7 +167,7 @@ extern "C"
 		node->getMaterial(materialID).AmbientColor = video::SColor(a,r,g,b);
 	}
 
-	void Java_zte_test_irrlib_SceneNode_nativeSetDiffuseColor(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetDiffuseColor(
 		JNIEnv *env, jobject defaultObj, jint r, jint g, jint b, jint a, jint materialID, jint id)
 	{
 		scene::ISceneNode* node =
@@ -175,7 +175,7 @@ extern "C"
 		node->getMaterial(materialID).DiffuseColor = video::SColor(a,r,g,b);
 	}
 
-	void Java_zte_test_irrlib_SceneNode_nativeSetEmissiveColor(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetEmissiveColor(
 		JNIEnv *env, jobject defaultObj, jint r, jint g, jint b, jint a, jint materialID, jint id)
 	{
 		scene::ISceneNode* node =
@@ -183,7 +183,7 @@ extern "C"
 		node->getMaterial(materialID).EmissiveColor = video::SColor(a,r,g,b);
 	}
 
-	void Java_zte_test_irrlib_SceneNode_nativeSetSpecularColor(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetSpecularColor(
 		JNIEnv *env, jobject defaultObj, jint r, jint g, jint b, jint a, jint materialID, jint id)
 	{
 		scene::ISceneNode* node =
@@ -191,7 +191,7 @@ extern "C"
 		node->getMaterial(materialID).SpecularColor = video::SColor(a,r,g,b);
 	}
 
-	void Java_zte_test_irrlib_SceneNode_nativeSetShininess(
+	void Java_zte_irrlib_scene_SceneNode_nativeSetShininess(
 		JNIEnv *env, jobject defaultObj, jdouble shininess, jint materialID, jint id)
 	{
 		scene::ISceneNode* node =
@@ -199,7 +199,7 @@ extern "C"
 		node->getMaterial(materialID).Shininess = (float)shininess;
 	}
 
-	int Java_zte_test_irrlib_SceneNode_nativeSetTexture(
+	int Java_zte_irrlib_scene_SceneNode_nativeSetTexture(
 		JNIEnv *env, jobject defaultObj, jstring path, jint materialID, jint id)
 	{
 		const char *msg = env->GetStringUTFChars(path,0);
@@ -220,7 +220,7 @@ extern "C"
 		return 0;
 	}
 
-	int Java_zte_test_irrlib_SceneNode_nativeAddTextureAnimator(
+	int Java_zte_irrlib_scene_SceneNode_nativeAddTextureAnimator(
 		JNIEnv *env, jobject defaultObj, jobjectArray array_obj, jint timePerFrame, jboolean loop, jint id)
 	{
 		scene::ISceneNode* node =

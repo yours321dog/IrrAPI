@@ -28,7 +28,7 @@ public class Param{
 
 extern "C"
 {
-	void Java_zte_test_irrlib_LightSceneNode_nativeSetEmitter(
+	void Java_zte_irrlib_scene_ParticleSystemSceneNode_nativeSetEmitter(
 		JNIEnv *env, jobject defaultObj, jint type, jobject param_obj, jint id)
 	{
 		jclass param_cls = env->GetObjectClass(param_obj);

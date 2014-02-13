@@ -45,7 +45,7 @@ public class SLight {
 
 extern "C"
 {
-	void Java_zte_test_irrlib_LightSceneNode_nativeSendLightData(
+	void Java_zte_irrlib_scene_LightSceneNode_nativeSendLightData(
 		JNIEnv *env, jobject defaultObj, jobject light_obj, jint id)
 	{
 		jclass light_cls = env->GetObjectClass(light_obj);

@@ -16,7 +16,7 @@ extern ISceneManager* smgr;
 
 extern "C"
 {
-	int Java_zte_test_irrlib_NodeFactory_nativeAddEmptySceneNode(
+	int Java_zte_irrlib_scene_NodeFactory_nativeAddEmptySceneNode(
 		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z, jint id, jint parent)
 	{
 		scene::ISceneNode* node = NULL;
@@ -30,7 +30,7 @@ extern "C"
 		else return -1;
 	}
 	
-	int Java_zte_test_irrlib_NodeFactory_nativeAddCubeSceneNode(
+	int Java_zte_irrlib_scene_NodeFactory_nativeAddCubeSceneNode(
 		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z, 
 		jdouble sizex, jdouble sizey, jdouble sizez, jint id, jint parent)
 	{
@@ -51,7 +51,7 @@ extern "C"
 		else return -1;
 	}
 	
-	int Java_zte_test_irrlib_NodeFactory_nativeAddMeshSceneNode(
+	int Java_zte_irrlib_scene_NodeFactory_nativeAddMeshSceneNode(
 		JNIEnv*  env, jobject defaultObj, jstring path, jdouble x, jdouble y, jdouble z, jint id, jint parent)
 	{
 		core::vector3df pos = core::vector3df(x,y,z);
@@ -71,7 +71,7 @@ extern "C"
 		else return -1;
 	}
 	
-	int Java_zte_test_irrlib_NodeFactory_nativeAddTextNode(
+	int Java_zte_irrlib_scene_NodeFactory_nativeAddTextNode(
 		JNIEnv*  env, jobject defaultObj, jstring text, jdouble x, jdouble y, jdouble z, jdouble size, jint id, jint parent)
 	{
 		/*Original Func:
@@ -105,7 +105,7 @@ extern "C"
 		else return -1;
 	}
 	
-	int Java_zte_test_irrlib_NodeFactory_nativeAddCameraSceneNode(
+	int Java_zte_irrlib_scene_NodeFactory_nativeAddCameraSceneNode(
 		JNIEnv*  env, jobject defaultObj, jdouble px, jdouble py, jdouble pz, 
 		jdouble lx, jdouble ly, jdouble lz, jint id, jint parent)
 	{
@@ -124,7 +124,7 @@ extern "C"
 		else return -1;
 	}
 	
-	int Java_zte_test_irrlib_NodeFactory_nativeAddBillboardSceneNode(
+	int Java_zte_irrlib_scene_NodeFactory_nativeAddBillboardSceneNode(
 		JNIEnv *env, jobject defaultObj, jdouble px, jdouble py, jdouble pz,
 		jdouble sx, jdouble sy, jint id, jint parent)
 	{
@@ -141,7 +141,7 @@ extern "C"
 		else return -1;
 	}
 	
-	int Java_zte_test_irrlib_NodeFactory_nativeAddLightSceneNode(
+	int Java_zte_irrlib_scene_NodeFactory_nativeAddLightSceneNode(
 		JNIEnv *env, jobject defaultObj, jdouble px, jdouble py, jdouble pz,
 		jdouble radius, jint r, jint g, jint b, jint id, jint parent)
 	{
@@ -158,7 +158,7 @@ extern "C"
 		else return -1;
 	}
 	
-	int Java_zte_test_irrlib_NodeFactory_nativeAddAnimateMeshSceneNode(
+	int Java_zte_irrlib_scene_NodeFactory_nativeAddAnimateMeshSceneNode(
 		JNIEnv*  env, jobject defaultObj, jstring path, jdouble x, jdouble y, jdouble z, jint id, jint parent)
 	{
 		ISceneManager* smgr = device->getSceneManager();
@@ -179,7 +179,7 @@ extern "C"
 		else return -1;
 	}
 	
-	int Java_zte_test_irrlib_NodeFactory_nativeAddParticleSystemSceneNode(
+	int Java_zte_irrlib_scene_NodeFactory_nativeAddParticleSystemSceneNode(
 		JNIEnv *env, jobject defaultObj, jdouble x, jdouble y, jdouble z,
 		jboolean withDefaultEmitter, int id, int parent)
 	{
@@ -203,7 +203,7 @@ extern "C"
 		else return -1;
 	}
 	
-	void Java_zte_test_irrlib_NodeFactory_nativeRemoveNode(
+	void Java_zte_irrlib_scene_NodeFactory_nativeRemoveNode(
 		JNIEnv *env, jobject defaultObj, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
