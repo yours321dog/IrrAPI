@@ -2,6 +2,7 @@ package zte.irrlib.scene;
 
 import java.util.ArrayList;
 
+import zte.irrapp.WLog;
 import zte.irrlib.Engine;
 import zte.irrlib.core.Color3i;
 import zte.irrlib.core.Color4i;
@@ -132,7 +133,7 @@ public class Scene {
 		node.setLookAt(lookAt);
 		node.setParent(parent);
 		node.mark();
-		
+
 		if (isActive){
 			setActiveCamera(node);
 		}
@@ -210,11 +211,18 @@ public class Scene {
 	}
 	
 	public void init(){
-		mNodeList.clear();
+		clear();
 		SceneNode.setScene(this);
-		setActiveCamera(addCameraSceneNode(
-				new Vector3d(0, 0, -10), 
-				new Vector3d(0, 0, 0), true, null));
+		addCameraSceneNode(
+				new Vector3d(0, 0, -30), 
+				new Vector3d(0, 0, 0), true, null);
+	}
+	
+	public void clear(){
+		mNodeList.clear();
+		nativeClear();
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		_NewId = 0;
 	}
 	
 	//this method will *NOT* automatically register node in native engine
@@ -328,5 +336,5 @@ public class Scene {
 	
 	//native remove node
 	private native void nativeRemoveNode(int id);
-	
+	private native void nativeClear();
 }

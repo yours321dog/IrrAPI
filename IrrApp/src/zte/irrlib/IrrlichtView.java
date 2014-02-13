@@ -70,6 +70,7 @@ public class IrrlichtView extends GLSurfaceView {
 			}
 			
 			public void onSurfaceChanged(GL10 unused, int width, int height) {
+				mEngine.resize(width, height);
 				mRenderer.onResize(mEngine, width, height);
 			}
 			
@@ -77,6 +78,8 @@ public class IrrlichtView extends GLSurfaceView {
 				mEngine.nativeBeginScene();
 				mRenderer.onDrawFrame(mEngine);
 				mEngine.nativeEndScene();
+				//unused.glClearColor(1, 0, 0, 1);
+				//unused.glClear(GL10.GL_COLOR_BUFFER_BIT);
 			}
 		};
 		
@@ -84,10 +87,6 @@ public class IrrlichtView extends GLSurfaceView {
 			Log.e(TAG, "No renderer set!");
 		}
 		else setRenderer(mSurfaceRenderer);
-	}
-
-	public void onDestroy(){
-		mEngine.finish();
 	}
 	
 	public interface Renderer {
@@ -101,7 +100,6 @@ public class IrrlichtView extends GLSurfaceView {
 	}
 	
 	protected void setupNativeEngine(){
-		System.loadLibrary("irrlicht");
 		mEngine = Engine.getInstance();
 		mEngine.create();
 	}
@@ -111,6 +109,10 @@ public class IrrlichtView extends GLSurfaceView {
 	protected GLSurfaceView.Renderer mSurfaceRenderer;
 	
 	protected int mRenderType = EGL10Ext.EGL_OPENGL_ES1_BIT;
+	
+	static {
+		System.loadLibrary("irrlicht");
+	}
 }
 
 class RecommedEGLConfigChooser implements GLSurfaceView.EGLConfigChooser{

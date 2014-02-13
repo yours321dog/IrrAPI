@@ -1,7 +1,6 @@
 
 package zte.irrapp;
 
-import zte.irrlib.Engine;
 import zte.irrlib.IrrlichtView;
 import zte.test.irrapp.R;
 import android.app.Activity;
@@ -18,20 +17,7 @@ public class IrrActivity extends Activity {
 		setContentView(R.layout.activity_irr);
 		mDemo = (IrrlichtView)findViewById(R.id.irrview);
 		mDemo.setRecommendEGLConfigChooser(4);
-		mDemo.setEngineRenderer(new IrrlichtView.Renderer() {
-
-			public void onDrawFrame(Engine engine) {
-				
-			}
-
-			public void onCreate(Engine engine) {
-				
-			}
-
-			public void onResize(Engine engine, int width, int height) {
-				
-			}
-		});
+		mDemo.setEngineRenderer(new DemoRenderer());
 	}
 	
 	@Override
@@ -39,6 +25,7 @@ public class IrrActivity extends Activity {
 		super.onResume();
 		if (mDemo != null){
 			mDemo.onResume();
+			WLog.i("onResume.");
 		}
 	}
 	
@@ -46,15 +33,8 @@ public class IrrActivity extends Activity {
 	protected void onPause(){
 		if (mDemo != null){
 			mDemo.onPause();
+			WLog.i("onPause.");
 		}
 		super.onPause();
-	}
-	
-	@Override
-	protected void onDestroy(){
-		if (mDemo != null){
-			mDemo.onDestroy();
-		}
-		super.onDestroy();
 	}
 }

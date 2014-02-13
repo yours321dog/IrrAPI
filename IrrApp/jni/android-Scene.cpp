@@ -1,6 +1,8 @@
 #include <jni.h>
 #include <android/log.h>
 #include <irrlicht.h>
+#define TAG "irr-smgr"
+
 using namespace irr;
 
 using namespace core;
@@ -14,7 +16,7 @@ extern IrrlichtDevice *device;
 extern IVideoDriver* driver;
 extern ISceneManager* smgr;
 scene::ISceneCollisionManager *collMgr;
-video::SColor backColor = video::SColor(100,100,100,100);
+video::SColor backColor = video::SColor(255,180,180,255);
 
 extern "C"
 {
@@ -67,6 +69,7 @@ extern "C"
 	void Java_zte_irrlib_scene_Scene_nativeSmgrDrawAll(
 		JNIEnv *env, jobject defaultObj)
 	{
+		printf("drawALl");
 		smgr->drawAll();
 	}
 	
@@ -128,7 +131,6 @@ extern "C"
 		jdouble sizex, jdouble sizey, jdouble sizez, jint id, jint parent)
 	{
 
-		__android_log_print(ANDROID_LOG_INFO, "Irrlicht", "add cube scene node");
 		core::vector3df pos = core::vector3df(x,y,z);
 		core::vector3df rot = core::vector3df(0,0,0);
 		core::vector3df scale = core::vector3df(sizex,sizey,sizez);
@@ -140,7 +142,11 @@ extern "C"
 		}
 		else node = smgr->addCubeSceneNode(10.0f,0,id,pos,rot,scale);
 
-		if(node) return 0;
+		if(node){
+			__android_log_print(ANDROID_LOG_INFO, TAG, "add cube scene node");
+			node->setMaterialFlag(EMF_LIGHTING, false);
+			return 0;
+		}
 		else return -1;
 	}
 
@@ -202,7 +208,7 @@ extern "C"
 		JNIEnv*  env, jobject defaultObj, jdouble px, jdouble py, jdouble pz,
 		jdouble lx, jdouble ly, jdouble lz, jint id, jint parent)
 	{
-		__android_log_print(ANDROID_LOG_INFO, "Irrlicht", "add camera scene node");
+		__android_log_print(ANDROID_LOG_INFO, TAG, "add camera scene node");
 		core::vector3df pos = core::vector3df(px,py,pz);
 		core::vector3df lookat = core::vector3df(lx,ly,lz);
 
@@ -304,6 +310,12 @@ extern "C"
 		parentNode->removeChild(node);
 	}
 
+	void Java_zte_irrlib_scene_Scene_nativeClear(JNIEnv *env, jobject defaultObj){
+		if (smgr){
+			smgr->clear();
+			__android_log_print(ANDROID_LOG_INFO, TAG, "All Node Cleared!");
+		}
+	}
 }
 	
 	

@@ -88,11 +88,14 @@ public class Engine{
 		}
 	}
 	
-	void create(){
-		nativeInit();
-		mScene = Scene.getInstance(this);
-		mScene.init();
+	synchronized void create(){
+		if (!mIsInit){
+			nativeInit();
+			mScene = Scene.getInstance(this);
+			mIsInit = true;
+		}
 		mEventQueue.clear();
+		mScene.init();
 	}
 	
 	void resize(int w, int h){
@@ -101,11 +104,16 @@ public class Engine{
 		nativeResize(w, h);		
 	}
 	
-	void finish(){
-		nativeDrop();
+	synchronized void finish(){
+		if (mIsInit){
+			mIsInit = false;
+			//do not use device->drop().
+		}
 	}
 	
 	private static Engine mUniInstance = null;
+	
+	private boolean mIsInit;
 	private String mResourcePath;
 	private ArrayList<Event> mEventQueue;
 	private int mWidth, mHeight;
@@ -117,7 +125,7 @@ public class Engine{
 
 	private native void nativeInit();
 	private native void nativeResize(int w, int h);
-	private native void nativeDrop();
+	//private native void nativeDrop(); <seems useless, and will cause error>
 	private native double nativeGetFPS();
 	
 	//add in 1.24

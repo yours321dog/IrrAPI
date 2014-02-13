@@ -57,13 +57,14 @@ extern "C"
 		size.Width = w;
 		size.Height = h;
 		device->getVideoDriver()->OnResize(size);
+		__android_log_print(ANDROID_LOG_INFO, TAG, "size changed, w: %d h: %d", w, h);
 	}
 	
-	void Java_zte_irrlib_Engine_nativeDrop(
+	/*void Java_zte_irrlib_Engine_nativeDrop(
 		JNIEnv *env, jobject defaultObj)
 	{
 		device->drop();
-	}
+	}*/
 	
 	void Java_zte_irrlib_Engine_nativeBeginScene(
 		JNIEnv *env, jobject defaultObj)

@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <android/log.h>
 #include <irrlicht.h>
+#define TAG "SceneNode"
 using namespace irr;
 
 using namespace core;
@@ -59,7 +60,10 @@ extern "C"
 		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
-		node->setPosition(core::vector3df(x,y,z));
+		if (node){
+			node->setPosition(core::vector3df(x,y,z));
+		}
+		else __android_log_print(ANDROID_LOG_WARN, TAG, "node(id :%d) not found!", id);
 	}
 	
 	void Java_zte_irrlib_scene_SceneNode_nativeAddRotationAnimator(
