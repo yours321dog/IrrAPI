@@ -220,7 +220,7 @@ public class Scene {
 	//this method will *NOT* automatically register node in native engine
 	//thus, it should not be used alone
 	void registerNode(SceneNode node){
-		if (node != null && node != SceneNode.NULL_SCENE_NODE){
+		if (node != null /*&& node != SceneNode.NULL_SCENE_NODE*/){
 			mNodeList.add(node);
 		}
 	}

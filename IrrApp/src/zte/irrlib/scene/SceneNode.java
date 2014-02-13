@@ -5,14 +5,14 @@ import zte.irrlib.core.Vector3d;
 
 public class SceneNode {
 	
-	public static final SceneNode createNullNode(){
+	/*public static final SceneNode createNullNode(){
 		SceneNode node = new SceneNode();
 		node.Id = 0;
 		node.mNodeType = TYPE_NULL;
 		return node;
-	}
+	}*/
 	
-	public static final SceneNode NULL_SCENE_NODE = createNullNode();
+	//public static final SceneNode NULL_SCENE_NODE;
 	
 	public static final int TYPE_NULL = 0x00;
 	public static final int TYPE_COMMON = 0x01;
@@ -57,7 +57,7 @@ public class SceneNode {
 	int getId() {return Id;}
 	
 	protected int Id;
-	protected SceneNode parent = NULL_SCENE_NODE;
+	protected SceneNode parent = null;
 	
 	protected boolean mIsVisible = true;;
 	protected Vector3d []mPosition;
@@ -78,18 +78,14 @@ public class SceneNode {
 	}
 	
 	public void mark(){
-		mPosition[2].copy(mPosition[1]);
-		mRotation[2].copy(mRotation[1]);
-		mScale[2].copy(mScale[1]);
+		mPosition[1].copy(mPosition[0]);
+		mRotation[1].copy(mRotation[0]);
+		mScale[1].copy(mScale[0]);
 	}
 	
 	public void setParent(SceneNode node){
-		if (node == null){
-			parent = NULL_SCENE_NODE;
-		}
-		else parent = node;
-		
-		nativeSetParent(parent.getId(), getId());
+		parent = node;
+		nativeSetParent(mScene.getId(parent), getId());
 	}
 	
 	public void setVisible(boolean isVisible){
@@ -99,60 +95,60 @@ public class SceneNode {
 	
 	public void setRotation(Vector3d para, int mode){
 		if (mode == ABSOLUTE_TRANSFORM){
-			mRotation[1] = mRotation[2].plus(para);
+			mRotation[0] = mRotation[1].plus(para);
 		}
 		else if (mode == RELATIVE_TRANSFORM){
-			mRotation[1] = mRotation[1].plus(para);
+			mRotation[0] = mRotation[0].plus(para);
 		}
 		else return;
 		
-		nativeSetRotation(mRotation[1].x, mRotation[1].y, mRotation[1].z, getId());
+		nativeSetRotation(mRotation[0].x, mRotation[0].y, mRotation[0].z, getId());
 	}
 	
 	public void setTranslation(Vector3d para, int mode){
 		if (mode == ABSOLUTE_TRANSFORM){
-			mPosition[1] = mPosition[2].plus(para);
+			mPosition[0] = mPosition[1].plus(para);
 		}
 		else if (mode == RELATIVE_TRANSFORM){
-			mPosition[1] = mPosition[1].plus(para);
+			mPosition[0] = mPosition[0].plus(para);
 		}
 		else return;
 		
-		nativeSetPosition(mPosition[1].x, mPosition[1].y, mPosition[1].z, getId());
+		nativeSetPosition(mPosition[0].x, mPosition[0].y, mPosition[0].z, getId());
 	}
 	public void setScale(Vector3d para, int mode){
 		if (mode == ABSOLUTE_TRANSFORM){
-			mScale[1] = mScale[2].plus(para);
+			mScale[0] = mScale[1].plus(para);
 		}
 		else if (mode == RELATIVE_TRANSFORM){
-			mScale[1] = mScale[1].plus(para);
+			mScale[0] = mScale[0].plus(para);
 		}
 		else return;
 		
-		nativeSetScale(mScale[1].x, mScale[1].y, mScale[1].z, getId());
+		nativeSetScale(mScale[0].x, mScale[0].y, mScale[0].z, getId());
 	}
 	public void setPosition(Vector3d pos){
-		mPosition[1] = pos;
-		nativeSetPosition(mPosition[1].x, mPosition[1].y, mPosition[1].z, getId());
+		mPosition[0] = pos;
+		nativeSetPosition(mPosition[0].x, mPosition[0].y, mPosition[0].z, getId());
 	}
 	
 	public Vector3d getPosition(){
-		return mPosition[1];
+		return mPosition[0];
 	}
 	
 	public TransformationInfo getTransformationInfo(){
 		TransformationInfo info = new TransformationInfo();
-		info.Position = new Vector3d(mPosition[1]);
-		info.Rotation = new Vector3d(mRotation[1]);
-		info.Scale = new Vector3d(mScale[1]);
+		info.Position = new Vector3d(mPosition[0]);
+		info.Rotation = new Vector3d(mRotation[0]);
+		info.Scale = new Vector3d(mScale[0]);
 		
 		return info;
 	}
 	
 	public void setTransformationInfo(TransformationInfo info){
-		mPosition[1].copy(info.Position);
-		mRotation[1].copy(info.Rotation);
-		mScale[1].copy(info.Scale);
+		mPosition[0].copy(info.Position);
+		mRotation[0].copy(info.Rotation);
+		mScale[0].copy(info.Scale);
 	}
 
 	public void addRotationAnimator(Vector3d speed, int animatorId){

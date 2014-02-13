@@ -112,7 +112,7 @@ public class Engine{
 	private Scene mScene;
 	
 	private Engine(){
-		
+		mEventQueue = new ArrayList<Event>();
 	}
 
 	private native void nativeInit();

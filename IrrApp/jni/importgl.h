@@ -40,7 +40,7 @@ extern "C" {
 /* Use DISABLE_IMPORTGL if you want to link the OpenGL ES at
  * compile/link time and not import it dynamically runtime.
  */
-//#ifndef DISABLE_IMPORTGL
+#ifndef DISABLE_IMPORTGL
 
 
 /* Dynamically fetches pointers to the egl & gl functions.
@@ -162,7 +162,7 @@ FNDEF(void, glViewport, (GLint x, GLint y, GLsizei width, GLsizei height));
 #endif // !IMPORTGL_NO_FNPTR_DEFS
 
 
-//#endif // !DISABLE_IMPORTGL
+#endif // !DISABLE_IMPORTGL
 
 
 #ifdef __cplusplus

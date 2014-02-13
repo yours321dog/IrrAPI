@@ -13,17 +13,11 @@ public class IrrActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		WLog.i("onCreated");
 		super.onCreate(savedInstanceState);
 		
-		
-		//mDemo = new IrrlichtView(this);
 		setContentView(R.layout.activity_irr);
-		WLog.i("new1");
 		mDemo = (IrrlichtView)findViewById(R.id.irrview);
-		WLog.i("new4");
 		mDemo.setRecommendEGLConfigChooser(4);
-		WLog.i("new2");
 		mDemo.setEngineRenderer(new IrrlichtView.Renderer() {
 
 			public void onDrawFrame(Engine engine) {
@@ -38,8 +32,6 @@ public class IrrActivity extends Activity {
 				
 			}
 		});
-		WLog.i("new3");
-		//setContentView(mDemo);
 	}
 	
 	@Override
