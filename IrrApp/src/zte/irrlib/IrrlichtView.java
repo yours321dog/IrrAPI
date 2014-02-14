@@ -5,6 +5,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
+import zte.irrapp.WLog;
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -27,6 +28,7 @@ public class IrrlichtView extends GLSurfaceView {
 		setEGLConfigChooser(new RecommedEGLConfigChooser(mRenderType, sampleLevel));
 	}
 	
+	//引擎尚未收到影响，待完成
 	public void enableGLES2(boolean flag){
 		if (flag){
 			mRenderType = EGL10Ext.EGL_OPENGL_ES2_BIT;
@@ -39,7 +41,7 @@ public class IrrlichtView extends GLSurfaceView {
 	}
 	
 	//method replacing GLSurfaceView.setRenderer.
-	public void setEngineRenderer(Renderer renderer){
+	public void setEngineRenderer(Engine.Renderer renderer){
 		/* source: http://developer.android.com/reference/android/opengl/GLSurfaceView.html
 		 * 
 		 * The following GLSurfaceView methods can only be called before setRenderer is called:
@@ -61,53 +63,26 @@ public class IrrlichtView extends GLSurfaceView {
 		//since this method will automatically call GLSurfaceView.setRenderer, the same principle
 		//above should be followed.
 		
-		mRenderer = renderer;
-		mSurfaceRenderer = new GLSurfaceView.Renderer() {
-			
-			public void onSurfaceCreated(GL10 unused, EGLConfig config) {
-				setupNativeEngine();
-				mRenderer.onCreate(mEngine);
-			}
-			
-			public void onSurfaceChanged(GL10 unused, int width, int height) {
-				mEngine.resize(width, height);
-				mRenderer.onResize(mEngine, width, height);
-			}
-			
-			public void onDrawFrame(GL10 unused) {
-				mEngine.nativeBeginScene();
-				mRenderer.onDrawFrame(mEngine);
-				mEngine.nativeEndScene();
-				//unused.glClearColor(1, 0, 0, 1);
-				//unused.glClear(GL10.GL_COLOR_BUFFER_BIT);
-			}
-		};
-		
-		if (mRenderer == null || mSurfaceRenderer == null){
-			Log.e(TAG, "No renderer set!");
-		}
-		else setRenderer(mSurfaceRenderer);
+		mEngine = Engine.getInstance();
+		mEngine.setRenderer(renderer);
+		super.setRenderer(new GLSurfaceView.Renderer() {
+			public void onSurfaceCreated(GL10 unused, EGLConfig config) {mEngine.onSurfaceCreated();}
+			public void onSurfaceChanged(GL10 unused, int width, int height) {mEngine.onSurfaceChanged(width, height);}
+			public void onDrawFrame(GL10 unused) {mEngine.onDrawFrame();}
+		});
 	}
 	
-	public interface Renderer {
-		void onDrawFrame(Engine engine);
-		void onCreate(Engine engine);
-		void onResize(Engine engine, int width, int height);
+	public void onDestroy(){
+		if (mEngine != null){
+			mEngine.onDestroy();
+		}
 	}
 	
 	protected Activity getActivity(){
 		return (Activity)getContext();
 	}
 	
-	protected void setupNativeEngine(){
-		mEngine = Engine.getInstance();
-		mEngine.create();
-	}
-	
 	protected Engine mEngine;
-	protected Renderer mRenderer;
-	protected GLSurfaceView.Renderer mSurfaceRenderer;
-	
 	protected int mRenderType = EGL10Ext.EGL_OPENGL_ES1_BIT;
 	
 	static {

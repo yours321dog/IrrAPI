@@ -1,22 +1,12 @@
 #include <jni.h>
-#include <android/log.h>
 #include <irrlicht.h>
-#define TAG "irr-smgr"
+#include "android-global.h"
 
-using namespace irr;
+#ifdef LOG_TAG
+#undef LOG_TAG
+#endif
 
-using namespace core;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
-
-extern IrrlichtDevice *device;
-extern IVideoDriver* driver;
-extern ISceneManager* smgr;
-scene::ISceneCollisionManager *collMgr;
-video::SColor backColor = video::SColor(255,180,180,255);
+#define LOG_TAG "NativeScene"
 
 extern "C"
 {
@@ -69,7 +59,6 @@ extern "C"
 	void Java_zte_irrlib_scene_Scene_nativeSmgrDrawAll(
 		JNIEnv *env, jobject defaultObj)
 	{
-		printf("drawALl");
 		smgr->drawAll();
 	}
 	
@@ -112,42 +101,64 @@ extern "C"
 		else return -1;
 	}
 
-	int Java_zte_irrlib_scene_Scene_nativeAddEmptySceneNode(
+	void Java_zte_irrlib_scene_Scene_nativeClear(JNIEnv *env, jobject defaultObj){
+		if (smgr){
+			smgr->clear();
+			LOGI("All Node Cleared!");
+		}
+	}
+	
+		int Java_zte_irrlib_scene_Scene_nativeAddEmptySceneNode(
 		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z, jint id, jint parent)
 	{
-		scene::ISceneNode* node = NULL;
+		ISceneNode* node = NULL;
+		ISceneNode* parentNode = NULL;
 		if(parent != 0){
-			scene::ISceneNode* parentNode = smgr->getSceneNodeFromId(parent);
-			node = smgr->addEmptySceneNode(parentNode,id);
+			parentNode = smgr->getSceneNodeFromId(parent);
+			if (!parentNode) 
+			{
+				WARN_PARENT_NOT_FOUND(parent, AddEmptySceneNode);
+				return -1;
+			}
 		}
-		else node = smgr->addEmptySceneNode(0,id);
+		node = smgr->addEmptySceneNode(parentNode,id);
 
-		if(node) return 0;
-		else return -1;
+		if (node) return 0;
+		else 
+		{
+			ERROR_ADD_FAILD(id, AddEmptySceneNode);
+			return -1;
+		}
 	}
 
 	int Java_zte_irrlib_scene_Scene_nativeAddCubeSceneNode(
 		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z,
-		jdouble sizex, jdouble sizey, jdouble sizez, jint id, jint parent)
+		jdouble size, jint id, jint parent)
 	{
-
 		core::vector3df pos = core::vector3df(x,y,z);
-		core::vector3df rot = core::vector3df(0,0,0);
-		core::vector3df scale = core::vector3df(sizex,sizey,sizez);
 
-		scene::ISceneNode* node = NULL;
+		ISceneNode* node = NULL;
+		ISceneNode* parentNode = NULL;
 		if(parent != 0){
-			scene::ISceneNode* parentNode = smgr->getSceneNodeFromId(parent);
-			node = smgr->addCubeSceneNode(10.0f,parentNode,id,pos,rot,scale);
+			parentNode = smgr->getSceneNodeFromId(parent);
+			if (!parentNode) 
+			{
+				WARN_PARENT_NOT_FOUND(parent, AddCubeSceneNode);
+				return -1;
+			}
 		}
-		else node = smgr->addCubeSceneNode(10.0f,0,id,pos,rot,scale);
+		node = smgr->addCubeSceneNode(size,parentNode,id,pos);
 
-		if(node){
-			__android_log_print(ANDROID_LOG_INFO, TAG, "add cube scene node");
-			node->setMaterialFlag(EMF_LIGHTING, false);
+		if (node)
+		{
+			node->setMaterialFlag(video::EMF_LIGHTING, false);
 			return 0;
 		}
-		else return -1;
+		else 
+		{
+			ERROR_ADD_FAILD(id, AddCubeSceneNode);
+			return -1;
+		}
 	}
 
 	int Java_zte_irrlib_scene_Scene_nativeAddMeshSceneNode(
@@ -156,18 +167,27 @@ extern "C"
 		core::vector3df pos = core::vector3df(x,y,z);
 
 		const char *msg = env->GetStringUTFChars(path,0);
-		core::stringc meshPath = msg;
-		scene::IMesh* mesh = smgr->getMesh(meshPath.c_str());
+		stringc meshPath = msg;
+		IMesh* mesh = smgr->getMesh(meshPath.c_str());
 
-		scene::IMeshSceneNode* node = NULL;
+		ISceneNode* node = NULL;
+		ISceneNode* parentNode = NULL;
 		if(parent != 0){
-			scene::ISceneNode* parentNode = smgr->getSceneNodeFromId(parent);
-			node = smgr->addMeshSceneNode(mesh,parentNode,id,pos);
+			parentNode = smgr->getSceneNodeFromId(parent);
+			if (!parentNode) 
+			{
+				WARN_PARENT_NOT_FOUND(parent, AddMeshSceneNode);
+				return -1;
+			}
 		}
-		else node = smgr->addMeshSceneNode(mesh,0,id,pos);
+		node = smgr->addMeshSceneNode(mesh,parentNode,id,pos);
 
-		if(node) return 0;
-		else return -1;
+		if (node) return 0;
+		else 
+		{
+			ERROR_ADD_FAILD(id, AddMeshSceneNode);
+			return -1;
+		}
 	}
 
 	int Java_zte_irrlib_scene_Scene_nativeAddTextNode(
@@ -208,24 +228,27 @@ extern "C"
 		JNIEnv*  env, jobject defaultObj, jdouble px, jdouble py, jdouble pz,
 		jdouble lx, jdouble ly, jdouble lz, jboolean isActive, jint id, jint parent)
 	{
-		
 		core::vector3df pos = core::vector3df(px,py,pz);
 		core::vector3df lookat = core::vector3df(lx,ly,lz);
 
-		scene::ICameraSceneNode* node = NULL;
+		ISceneNode* node = NULL;
+		ISceneNode* parentNode = NULL;
 		if(parent != 0){
-			scene::ISceneNode* parentNode = smgr->getSceneNodeFromId(parent);
-			node = smgr->addCameraSceneNode(parentNode,pos,lookat,id);
+			parentNode = smgr->getSceneNodeFromId(parent);
+			if (!parentNode) 
+			{
+				WARN_PARENT_NOT_FOUND(parent, AddCameraSceneNode);
+				return -1;
+			}
 		}
-		else node = smgr->addCameraSceneNode(0,pos,lookat,id);
+		node = smgr->addCameraSceneNode(parentNode,pos,lookat,id);
 
-		if(node)
+		if (node) return 0;
+		else 
 		{
-			if (isActive) smgr->setActiveCamera(node);
-			__android_log_print(ANDROID_LOG_INFO, TAG, "new camera, id: %d, parent: %d", id, parent);
-			return 0;
+			ERROR_ADD_FAILD(id, AddCameraSceneNode);
+			return -1;
 		}
-		else return -1;
 	}
 
 	int Java_zte_irrlib_scene_Scene_nativeAddBillboardSceneNode(
@@ -234,15 +257,25 @@ extern "C"
 	{
 		core::vector3df pos = core::vector3df(px,py,pz);
 		core::dimension2d<f32> size = core::dimension2d<f32>(sx,sy);
-		scene::IBillboardSceneNode* node = NULL;
+		
+		ISceneNode* node = NULL;
+		ISceneNode* parentNode = NULL;
 		if(parent != 0){
-			scene::ISceneNode* parentNode = smgr->getSceneNodeFromId(parent);
-			node = smgr->addBillboardSceneNode(parentNode,size,pos,id);
+			parentNode = smgr->getSceneNodeFromId(parent);
+			if (!parentNode) 
+			{
+				WARN_PARENT_NOT_FOUND(parent, AddBillboardSceneNode);
+				return -1;
+			}
 		}
-		else node = smgr->addBillboardSceneNode(0,size,pos,id);
+		node = smgr->addBillboardSceneNode(parentNode,size,pos,id);
 
-		if(node) return 0;
-		else return -1;
+		if (node) return 0;
+		else 
+		{
+			ERROR_ADD_FAILD(id, AddBillboardSceneNode);
+			return -1;
+		}
 	}
 
 	int Java_zte_irrlib_scene_Scene_nativeAddLightSceneNode(
@@ -250,18 +283,28 @@ extern "C"
 		jdouble radius, jint r, jint g, jint b, jint id, jint parent)
 	{
 		core::vector3df pos = core::vector3df(px,py,pz);
-		video::SColor color(255,r,g,b);
-		scene::ILightSceneNode* node = NULL;
+		video::SColor color(0xff,r,g,b);
+		
+		ISceneNode* node = NULL;
+		ISceneNode* parentNode = NULL;
 		if(parent != 0){
-			scene::ISceneNode* parentNode = smgr->getSceneNodeFromId(parent);
-			node = smgr->addLightSceneNode(parentNode,pos,color,radius,id);
+			parentNode = smgr->getSceneNodeFromId(parent);
+			if (!parentNode) 
+			{
+				WARN_PARENT_NOT_FOUND(parent, AddLightSceneNode);
+				return -1;
+			}
 		}
-		else node = smgr->addLightSceneNode(0,pos,color,radius,id);
+		node = smgr->addLightSceneNode(parentNode,pos,color,radius,id);
 
-		if(node) return 0;
-		else return -1;
+		if (node) return 0;
+		else 
+		{
+			ERROR_ADD_FAILD(id, AddLightSceneNode);
+			return -1;
+		}
 	}
-
+/*******************************************************************************/
 	int Java_zte_irrlib_scene_Scene_nativeAddAnimateMeshSceneNode(
 		JNIEnv*  env, jobject defaultObj, jstring path, jdouble x, jdouble y, jdouble z, jint id, jint parent)
 	{
@@ -315,12 +358,6 @@ extern "C"
 		parentNode->removeChild(node);
 	}
 
-	void Java_zte_irrlib_scene_Scene_nativeClear(JNIEnv *env, jobject defaultObj){
-		if (smgr){
-			smgr->clear();
-			__android_log_print(ANDROID_LOG_INFO, TAG, "All Node Cleared!");
-		}
-	}
 }
 	
 	

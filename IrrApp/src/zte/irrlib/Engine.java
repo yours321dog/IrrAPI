@@ -7,11 +7,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import zte.irrapp.WLog;
 import zte.irrlib.core.Vector2i;
 import zte.irrlib.scene.Scene;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+//向上负责与视图类的通信，向下负责管理引擎的java和native层
 public class Engine{
 	public static final String LogTag = "IrrEngine";
 	
@@ -27,7 +29,7 @@ public class Engine{
 	}
 	
 	public Vector2i getRenderSize(){
-		return new Vector2i(mWidth, mHeight);
+		return mScene.getRenderSize();
 	}
 	
 	public double getFPS(){
@@ -88,48 +90,85 @@ public class Engine{
 		}
 	}
 	
-	synchronized void create(){
-		if (!mIsInit){
-			nativeInit();
+	public void setRenderer(Renderer renderer){
+		mRenderer = renderer;
+	}
+	
+	public synchronized void onDestroy(){
+		if (mIsInit) javaClear();
+		if (nativeIsInit()) nativeClear();
+	}
+	
+	public synchronized void onSurfaceCreated(){
+		if (!checkState()){
 			mScene = Scene.getInstance(this);
-			mIsInit = true;
+			
+			//do some clean
+			if (mIsInit) javaClear();
+			if (nativeIsInit()) nativeClear();
+			//re-initialize
+			nativeInit();
+			JavaInit();
+			mRenderer.onCreate(this);
 		}
-		mEventQueue.clear();
+	}
+	
+	public void onSurfaceChanged(int width, int height){
+		nativeResize(width, height);
+		mScene.onResize(width, height);
+		mRenderer.onResize(this, width, height);
+	}
+	
+	public void onDrawFrame(){
+		nativeBeginScene();
+		mRenderer.onDrawFrame(this);
+		nativeEndScene();
+	}
+	
+	private int JavaInit(){
 		mScene.init();
+		mIsInit = true; 
+		return 0;
 	}
 	
-	void resize(int w, int h){
-		mWidth = w;
-		mHeight = h;
-		nativeResize(w, h);		
+	private void javaClear(){
+		if (mEventQueue != null) mEventQueue.clear();
+		mScene.javaClear();
+		
+		mIsInit = false; 
 	}
 	
-	synchronized void finish(){
-		if (mIsInit){
-			mIsInit = false;
-			//do not use device->drop().
-		}
+	//当且仅当native引擎和Java接口都已经被初始化时返回true
+	private boolean checkState(){
+		return (mIsInit && nativeIsInit());
 	}
 	
-	private static Engine mUniInstance = null;
+	private static Engine mUniInstance;
 	
-	private boolean mIsInit;
-	private String mResourcePath;
-	private ArrayList<Event> mEventQueue;
-	private int mWidth, mHeight;
 	private Scene mScene;
+	private Renderer mRenderer;
+	private ArrayList<Event> mEventQueue;
+	
+	private String mResourcePath;
+	private boolean mIsInit;
 	
 	private Engine(){
 		mEventQueue = new ArrayList<Event>();
 	}
 
-	private native void nativeInit();
-	private native void nativeResize(int w, int h);
-	//private native void nativeDrop(); <seems useless, and will cause error>
-	private native double nativeGetFPS();
+	private native int nativeInit();
+	private native void nativeClear();
+	private native boolean nativeIsInit();
 	
-	//add in 1.24
-	//it seems that device->run() does nothing, so ignore it 
+	private native void nativeResize(int w, int h);
+	//private native void nativeDrop();  ***  seems useless, and will cause error
+	private native double nativeGetFPS();
 	native void nativeBeginScene();
 	native void nativeEndScene();
+	
+	public interface Renderer {
+		void onDrawFrame(Engine engine);
+		void onCreate(Engine engine);
+		void onResize(Engine engine, int width, int height);
+	}
 }

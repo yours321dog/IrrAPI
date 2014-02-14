@@ -28,65 +28,38 @@ public class SceneNode {
 	public static final int ABSOLUTE_TRANSFORM = 0;
 	public static final int RELATIVE_TRANSFORM = 1;
 	
-	public class TransformationInfo{
-		public Vector3d Position;
-		public Vector3d Rotation;
-		public Vector3d Scale;
-	}
-	
-	SceneNode() {
-		this.Id = mScene.getNewId();
-		
-		//第一个是当前值，第二个是标记值
-		mPosition = new Vector3d[2];
-		mPosition[0] = new Vector3d(0, 0, 0);
-		mPosition[1] = new Vector3d();
-		
-		mRotation = new Vector3d[2];
-		mRotation[0] = new Vector3d(0, 0, 0);
-		mRotation[1] = new Vector3d();
-		
-		mScale = new Vector3d[2];
-		mScale[0] = new Vector3d(1, 1, 1);
-		mScale[1] = new Vector3d();
-		
-		mark();
-		
-		mNodeType = TYPE_COMMON;
-	}
-	
-	int getId() {return Id;}
-	
-	protected int Id;
-	protected SceneNode parent = null;
-	
-	protected boolean mIsVisible = true;;
-	protected Vector3d []mPosition;
-	protected Vector3d []mRotation;
-	protected Vector3d []mScale;
-	
-	protected int mNodeType;
-	private static Scene mScene;
-	
-	public int getNodeType(){
-		return mNodeType;
-	}
-	
 	public static boolean setScene(Scene scene){
 		if (scene == null) return false;
 		mScene = scene;
 		return true;
 	}
 	
+	public class TransformationInfo{
+		public Vector3d Position;
+		public Vector3d Rotation;
+		public Vector3d Scale;
+	}
+	
+	public int getNodeType(){
+		return mNodeType;
+	}
+
 	public void mark(){
 		mPosition[1].copy(mPosition[0]);
 		mRotation[1].copy(mRotation[0]);
 		mScale[1].copy(mScale[0]);
 	}
 	
+	public void javaLoadDataAndInit(Vector3d pos, SceneNode parent){
+		mPosition[0] = pos;
+		mParent = parent;
+		mark();
+		mScene.registerNode(this);
+	}
+	
 	public void setParent(SceneNode node){
-		parent = node;
-		nativeSetParent(mScene.getId(parent), getId());
+		mParent = node;
+		nativeSetParent(mScene.getId(mParent), getId());
 	}
 	
 	public void setVisible(boolean isVisible){
@@ -191,12 +164,45 @@ public class SceneNode {
 		
 		void setTouchable(boolean flag);
 	}
+	
+	
+	SceneNode() {
+		this.Id = mScene.getNewId();
+		
+		//第一个是当前值，第二个是标记值
+		mPosition = new Vector3d[2];
+		mPosition[0] = new Vector3d(0, 0, 0);
+		mPosition[1] = new Vector3d();
+		
+		mRotation = new Vector3d[2];
+		mRotation[0] = new Vector3d(0, 0, 0);
+		mRotation[1] = new Vector3d();
+		
+		mScale = new Vector3d[2];
+		mScale[0] = new Vector3d(1, 1, 1);
+		mScale[1] = new Vector3d();
+		
+		mNodeType = TYPE_COMMON;
+	}
+	
+	int getId() {return Id;}
+	
+	protected int Id;
+	protected SceneNode mParent = null;
+	
+	protected boolean mIsVisible = true;;
+	protected Vector3d []mPosition;
+	protected Vector3d []mRotation;
+	protected Vector3d []mScale;
+	
+	protected int mNodeType;
+	private static Scene mScene;
 
-	private native void nativeSetParent(int parent, int Id);
-	private native void nativeSetVisible(boolean isVisible, int Id);
-	private native void nativeSetRotation(double x, double y, double z, int Id);
-	private native void nativeSetScale(double x, double y, double z, int Id);
-	private native void nativeSetPosition(double x, double y, double z, int Id);
+	private native int nativeSetParent(int parent, int Id);
+	private native int nativeSetVisible(boolean isVisible, int Id);
+	private native int nativeSetRotation(double x, double y, double z, int Id);
+	private native int nativeSetScale(double x, double y, double z, int Id);
+	private native int nativeSetPosition(double x, double y, double z, int Id);
 
 	private native void nativeAddRotationAnimator(double x, double y, double z, int Id);
 	private native void nativeAddFlyCircleAnimator(double cx, double cy, double cz,

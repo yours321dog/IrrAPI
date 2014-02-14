@@ -81,34 +81,25 @@ public class Scene {
 		if (nativeAddEmptySceneNode(pos.x, pos.y, pos.z, getId(node), getId(parent)) != 0)
 			return null;
 		
-		node.setParent(parent);
-		node.setPosition(pos);
-		node.mark();
-		registerNode(node);
+		node.javaLoadDataAndInit(pos, parent);
 		return node;
 	}
 	
-	public MeshSceneNode addCubeSceneNode(Vector3d pos, Vector3d size, SceneNode parent){
+	public MeshSceneNode addCubeSceneNode(Vector3d pos, float size, SceneNode parent){
 		MeshSceneNode node = new MeshSceneNode();
-		if (nativeAddCubeSceneNode(pos.x, pos.y, pos.z, size.x, size.y, size.z, getId(node), getId(parent)) != 0)
+		if (nativeAddCubeSceneNode(pos.x, pos.y, pos.z, size, getId(node), getId(parent)) != 0)
 			return null;
 		
-		node.setPosition(pos); 
-		node.setParent(parent);
-		node.mark();
-		registerNode(node);
+		node.javaLoadDataAndInit(pos, parent);
 		return node;
 	}
 	
-	public SceneNode addMeshSceneNode(String path, Vector3d pos, SceneNode parent){
-		SceneNode node = new SceneNode();
+	public MeshSceneNode addMeshSceneNode(String path, Vector3d pos, SceneNode parent){
+		MeshSceneNode node = new MeshSceneNode();
 		if (nativeAddMeshSceneNode(mEngine.getResourceDir() + path, pos.x, pos.y, pos.z, getId(node), getId(parent)) != 0)
 			return null;
 		
-		node.setPosition(pos);
-		node.setParent(parent);
-		node.mark();
-		registerNode(node);
+		node.javaLoadDataAndInit(pos, parent);
 		return node;
 	}
 	
@@ -117,10 +108,7 @@ public class Scene {
 		if (nativeAddTextNode(text, pos.x, pos.y, pos.z, size, getId(node), getId(parent)) != 0)
 			return null;
 		
-		node.setPosition(pos);
-		node.setParent(parent);
-		node.mark();
-		registerNode(node);
+		node.javaLoadDataAndInit(pos, parent);
 		return node;
 	}
 	
@@ -129,15 +117,8 @@ public class Scene {
 		if (nativeAddCameraSceneNode(pos.x, pos.y, pos.z, lookAt.x, lookAt.y, lookAt.z, isActive, getId(node), getId(parent)) != 0)
 			return null;
 		
-		node.setPosition(pos);
 		node.setLookAt(lookAt);
-		node.setParent(parent);
-		node.mark();
-
-		if (isActive){
-			setActiveCamera(node);
-		}
-		registerNode(node);
+		node.javaLoadDataAndInit(pos, parent);
 		return node;
 	}
 	
@@ -147,10 +128,7 @@ public class Scene {
 			return null;
 		}
 		
-		node.setPosition(pos);
-		node.setParent(parent);
-		node.mark();
-		registerNode(node);
+		node.javaLoadDataAndInit(pos, parent);
 		return node;
 	}
 	
@@ -162,10 +140,7 @@ public class Scene {
 			return null;
 		}
 		
-		node.setPosition(pos);
-		node.setParent(parent);
-		node.mark();
-		registerNode(node);
+		node.javaLoadDataAndInit(pos, parent);
 		return node;
 	}
 	
@@ -174,10 +149,7 @@ public class Scene {
 		if (nativeAddEmptySceneNode(pos.x, pos.y, pos.z, getId(node), getId(parent)) != 0){
 			return null;
 		}
-		node.setParent(parent);
-		node.setPosition(pos);
-		node.mark();
-		registerNode(node);
+		node.javaLoadDataAndInit(pos, parent);
 		return node;
 	}
 	
@@ -186,10 +158,7 @@ public class Scene {
 		if (nativeAddAnimateMeshSceneNode(path, pos.x, pos.y, pos.z, getId(node), getId(parent)) != 0){
 			return null;
 		}
-		node.setParent(parent);
-		node.setPosition(pos);
-		node.mark();
-		registerNode(node);
+		node.javaLoadDataAndInit(pos, parent);
 		return node;
 	}
 	
@@ -198,37 +167,46 @@ public class Scene {
 		if (nativeAddParticleSystemSceneNode(pos.x, pos.y, pos.z, withDefaultEmitter, getId(node), getId(parent)) != 0){
 			return null;
 		}
-		node.setParent(parent);
-		node.setPosition(pos);
-		node.mark();
-		registerNode(node);
+		node.javaLoadDataAndInit(pos, parent);
 		return node;
 	}
-	
+
 	public void removeNode(SceneNode node){
 		unregisterNode(node);
 		nativeRemoveNode(node.getId());
 	}
 	
 	public void init(){
-		clear();
 		SceneNode.setScene(this);
 		addCameraSceneNode(
-				new Vector3d(0, 0, -30), 
-				new Vector3d(0, 0, 0), true, null);
+				new Vector3d(0, 0, 0), 
+				new Vector3d(0, 0, 100), true, null);
 	}
 	
-	public void clear(){
+	public void onResize(int width, int height){
+		mWidth = width;
+		mHeight = height;
+	}
+	
+	public Vector2i getRenderSize(){
+		return new Vector2i(mWidth, mHeight);
+	}
+	
+	public void clearAllNodes(){
 		mNodeList.clear();
 		nativeClear();
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		_NewId = 0;
+	}
+	
+	public void javaClear(){
+		mNodeList.clear();
 		_NewId = 0;
 	}
 	
 	//this method will *NOT* automatically register node in native engine
 	//thus, it should not be used alone
 	void registerNode(SceneNode node){
-		if (node != null /*&& node != SceneNode.NULL_SCENE_NODE*/){
+		if (node != null){
 			mNodeList.add(node);
 		}
 	}
@@ -268,6 +246,7 @@ public class Scene {
 	
 	private Engine mEngine;
 	private CameraSceneNode mActiveCamera;
+	private SceneNode mRootNode;
 	private ArrayList<SceneNode> mNodeList;
 	private int mWidth, mHeight;
 	
@@ -304,8 +283,7 @@ public class Scene {
 	
 	private native int nativeAddCubeSceneNode(
 			double x, double y, double z, 
-			double sizex, double sizey, double sizez, 
-			int id, int parent);
+			double size, int id, int parent);
 	
 	private native int nativeAddMeshSceneNode(
 			String path, double x, double y, double z, int id, int parent);

@@ -2551,6 +2551,7 @@ void COGLES1Driver::OnResize(const core::dimension2d<u32>& size)
 {
 	CNullDriver::OnResize(size);
 	glViewport(0, 0, size.Width, size.Height);
+	Transformation3DChanged = true;
 }
 
 

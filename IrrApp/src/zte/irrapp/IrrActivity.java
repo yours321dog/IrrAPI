@@ -13,7 +13,6 @@ public class IrrActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.activity_irr);
 		mDemo = (IrrlichtView)findViewById(R.id.irrview);
 		mDemo.setRecommendEGLConfigChooser(4);
@@ -25,7 +24,6 @@ public class IrrActivity extends Activity {
 		super.onResume();
 		if (mDemo != null){
 			mDemo.onResume();
-			WLog.i("onResume.");
 		}
 	}
 	
@@ -33,8 +31,15 @@ public class IrrActivity extends Activity {
 	protected void onPause(){
 		if (mDemo != null){
 			mDemo.onPause();
-			WLog.i("onPause.");
 		}
 		super.onPause();
+	}
+	
+	@Override
+	protected void onDestroy(){
+		if (mDemo != null){
+			mDemo.onDestroy();
+		}
+		super.onDestroy();
 	}
 }
