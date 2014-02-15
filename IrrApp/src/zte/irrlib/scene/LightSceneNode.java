@@ -8,12 +8,6 @@ public class LightSceneNode extends SceneNode {
 		mNodeType = TYPE_LIGHT;
 	}
 	
-	public LightSceneNode(SceneNode node){
-		this.Id = node.getId();
-	}
-	
-	public SLight LightData;
-	
 	public void UpdateLightData(){
 		nativeSendLightData(LightData, getId());
 	}
@@ -21,6 +15,8 @@ public class LightSceneNode extends SceneNode {
 	public int getLightType(){
 		return LightData.Type;
 	}
+	
+	public SLight LightData;
 	
 	private native void nativeSendLightData(SLight data, int id);
 }

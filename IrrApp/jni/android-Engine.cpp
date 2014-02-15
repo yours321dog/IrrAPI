@@ -14,6 +14,16 @@ extern "C"
 		JNIEnv *env, jobject defaultObj)
 	{
 		importGLInit();
+		
+		if (device) 
+		{
+			delete device;
+			device = 0;
+			driver = 0;
+			smgr = 0;
+			collMgr = 0;
+		}
+		
 		device = createDevice( video::EDT_OGLES1, 
 			dimension2d<u32>(gWindowWidth, gWindowHeight), 16, false, false, false, 0);
 
@@ -50,8 +60,9 @@ extern "C"
 	int Java_zte_irrlib_Engine_nativeClear(
 		JNIEnv *env, jobject defaultObj)
 	{
-		if (device) delete device;
-		device = 0;
+		//if (device) delete device;
+		//device = 0;
+		//if (smgr) smgr->clear();
 		_isInit = false;
 	}
 	

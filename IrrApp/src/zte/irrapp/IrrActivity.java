@@ -35,11 +35,12 @@ public class IrrActivity extends Activity {
 		super.onPause();
 	}
 	
-	@Override
+	/*@Override
 	protected void onDestroy(){
 		if (mDemo != null){
 			mDemo.onDestroy();
 		}
+		WLog.i("onDestroy");
 		super.onDestroy();
-	}
+	}*/
 }

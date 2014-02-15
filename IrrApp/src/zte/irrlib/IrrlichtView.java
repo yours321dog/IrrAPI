@@ -72,11 +72,19 @@ public class IrrlichtView extends GLSurfaceView {
 		});
 	}
 	
-	public void onDestroy(){
+	@Override
+	protected void onDetachedFromWindow(){
 		if (mEngine != null){
 			mEngine.onDestroy();
 		}
+		super.onDetachedFromWindow();
 	}
+	
+	/*public void onDestroy(){
+		if (mEngine != null){
+			mEngine.onDestroy();
+		}
+	}*/
 	
 	protected Activity getActivity(){
 		return (Activity)getContext();

@@ -187,7 +187,7 @@ public class SceneNode {
 	
 	int getId() {return Id;}
 	
-	protected int Id;
+	protected final int Id;
 	protected SceneNode mParent = null;
 	
 	protected boolean mIsVisible = true;;
@@ -196,7 +196,7 @@ public class SceneNode {
 	protected Vector3d []mScale;
 	
 	protected int mNodeType;
-	private static Scene mScene;
+	protected static Scene mScene;
 
 	private native int nativeSetParent(int parent, int Id);
 	private native int nativeSetVisible(boolean isVisible, int Id);

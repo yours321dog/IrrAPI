@@ -36,6 +36,10 @@ public class Scene {
 		return queryById(nodeId);
 	}
 	
+	public Vector2i getRenderSize(){
+		return new Vector2i(mWidth, mHeight);
+	}
+	
 	public SceneNode queryById(int id){
 		if (id > 0){
 			for (SceneNode node:mNodeList){
@@ -54,9 +58,7 @@ public class Scene {
 		else return node.getId();
 	}
 	
-	int getNewId(){
-		return ++_NewId;
-	}
+
 	
 	public void drawImage(String path, Vector2i leftUp, int w, int h, int transparent){
 		if (transparent < 0) transparent = 0;
@@ -117,8 +119,7 @@ public class Scene {
 		if (nativeAddCameraSceneNode(pos.x, pos.y, pos.z, lookAt.x, lookAt.y, lookAt.z, isActive, getId(node), getId(parent)) != 0)
 			return null;
 		
-		node.setLookAt(lookAt);
-		node.javaLoadDataAndInit(pos, parent);
+		node.javaLoadDataAndInit(pos, lookAt, parent);
 		return node;
 	}
 	
@@ -176,6 +177,12 @@ public class Scene {
 		nativeRemoveNode(node.getId());
 	}
 	
+	public void clearAllNodes(){
+		mNodeList.clear();
+		nativeClear();
+		_NewId = 0;
+	}
+	
 	public void init(){
 		SceneNode.setScene(this);
 		addCameraSceneNode(
@@ -186,16 +193,6 @@ public class Scene {
 	public void onResize(int width, int height){
 		mWidth = width;
 		mHeight = height;
-	}
-	
-	public Vector2i getRenderSize(){
-		return new Vector2i(mWidth, mHeight);
-	}
-	
-	public void clearAllNodes(){
-		mNodeList.clear();
-		nativeClear();
-		_NewId = 0;
 	}
 	
 	public void javaClear(){
@@ -223,6 +220,10 @@ public class Scene {
 			}
 		}
 		return false;
+	}
+	
+	int getNewId(){
+		return ++_NewId;
 	}
 		
 	public static Scene getInstance(Engine engine){

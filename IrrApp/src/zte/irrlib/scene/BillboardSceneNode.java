@@ -9,10 +9,6 @@ public class BillboardSceneNode extends SceneNode implements SceneNode.MaterialO
 		mNodeType = TYPE_BILLBOARD;
 	}
 	
-	BillboardSceneNode(SceneNode node){
-		Id = node.getId();
-	}
-	
 	public void setColor(Color4i colorFront, Color4i colorBack){
 		nativeSetColor(colorFront.r(), colorFront.g(), colorFront.b(), colorFront.a(),
 				colorBack.r(), colorBack.g(), colorBack.b(), colorBack.a(), getId());
