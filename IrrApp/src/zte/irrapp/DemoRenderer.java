@@ -11,25 +11,24 @@ import zte.irrlib.scene.SceneNode;
 
 public class DemoRenderer implements Renderer {
 
-	@Override
 	public void onDrawFrame(Engine engine) {
 		Scene scene = engine.getScene();
 		cube.setRotation(new Vector3d(1, 0.2, 0), SceneNode.RELATIVE_TRANSFORM);
 		scene.drawAllNodes();
+		
 		count = (count+1)%100;
 		if (count == 0) WLog.i("fps: " + engine.getFPS());
 	}
 
-	@Override
 	public void onCreate(Engine engine) {
 		Scene scene = engine.getScene();
+		scene.applyLighting(true);
 		cube = scene.addCubeSceneNode(new Vector3d(0, 0, 0), 10, null);
 		cube.setPosition(new Vector3d(0,0,20));
 	}
-
-	@Override
+	
 	public void onResize(Engine engine, int width, int height) {
-
+		
 	}
 
 	private MeshSceneNode cube;

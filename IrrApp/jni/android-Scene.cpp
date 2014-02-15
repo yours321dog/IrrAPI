@@ -109,7 +109,8 @@ extern "C"
 	}
 	
 		int Java_zte_irrlib_scene_Scene_nativeAddEmptySceneNode(
-		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z, jint id, jint parent)
+		JNIEnv*  env, jobject defaultObj, 
+		jdouble x, jdouble y, jdouble z, jint id, jint parent, jboolean isLight)
 	{
 		ISceneNode* node = NULL;
 		ISceneNode* parentNode = NULL;
@@ -123,7 +124,11 @@ extern "C"
 		}
 		node = smgr->addEmptySceneNode(parentNode,id);
 
-		if (node) return 0;
+		if (node)
+		{
+			if (!isLight) node->setMaterialFlag(video::EMF_LIGHTING, false);
+			return 0;
+		}
 		else 
 		{
 			ERROR_ADD_FAILD(id, AddEmptySceneNode);
@@ -133,7 +138,7 @@ extern "C"
 
 	int Java_zte_irrlib_scene_Scene_nativeAddCubeSceneNode(
 		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z,
-		jdouble size, jint id, jint parent)
+		jdouble size, jint id, jint parent, jboolean isLight)
 	{
 		core::vector3df pos = core::vector3df(x,y,z);
 
@@ -151,7 +156,7 @@ extern "C"
 
 		if (node)
 		{
-			node->setMaterialFlag(video::EMF_LIGHTING, false);
+			if (!isLight) node->setMaterialFlag(video::EMF_LIGHTING, false);
 			return 0;
 		}
 		else 
@@ -162,7 +167,8 @@ extern "C"
 	}
 
 	int Java_zte_irrlib_scene_Scene_nativeAddMeshSceneNode(
-		JNIEnv*  env, jobject defaultObj, jstring path, jdouble x, jdouble y, jdouble z, jint id, jint parent)
+		JNIEnv*  env, jobject defaultObj, jstring path, 
+		jdouble x, jdouble y, jdouble z, jint id, jint parent, jboolean isLight)
 	{
 		core::vector3df pos = core::vector3df(x,y,z);
 
@@ -182,7 +188,11 @@ extern "C"
 		}
 		node = smgr->addMeshSceneNode(mesh,parentNode,id,pos);
 
-		if (node) return 0;
+		if (node)
+		{
+			if (!isLight) node->setMaterialFlag(video::EMF_LIGHTING, false);
+			return 0;
+		}
 		else 
 		{
 			ERROR_ADD_FAILD(id, AddMeshSceneNode);
@@ -191,7 +201,9 @@ extern "C"
 	}
 
 	int Java_zte_irrlib_scene_Scene_nativeAddTextNode(
-		JNIEnv*  env, jobject defaultObj, jstring text, jdouble x, jdouble y, jdouble z, jdouble size, jint id, jint parent)
+		JNIEnv*  env, jobject defaultObj, jstring text,
+		jdouble x, jdouble y, jdouble z, jdouble size, 
+		jint id, jint parent, jboolean isLight)
 	{
 		/*Original Func:
 		ITextSceneNode* addTextSceneNode(gui::IGUIFont* font, const wchar_t* text,
@@ -220,13 +232,17 @@ extern "C"
 
 			else node = smgr->addTextSceneNode(font, strw.c_str(), video::SColor(255,255,255,255),0, pos, id);
 		}
-		if(node) return 0;
+		if (node)
+		{
+			if (!isLight) node->setMaterialFlag(video::EMF_LIGHTING, false);
+			return 0;
+		}
 		else return -1;
 	}
 
 	int Java_zte_irrlib_scene_Scene_nativeAddCameraSceneNode(
 		JNIEnv*  env, jobject defaultObj, jdouble px, jdouble py, jdouble pz,
-		jdouble lx, jdouble ly, jdouble lz, jboolean isActive, jint id, jint parent)
+		jdouble lx, jdouble ly, jdouble lz, jboolean isActive, jint id, jint parent, jboolean isLight)
 	{
 		core::vector3df pos = core::vector3df(px,py,pz);
 		core::vector3df lookat = core::vector3df(lx,ly,lz);
@@ -243,7 +259,11 @@ extern "C"
 		}
 		node = smgr->addCameraSceneNode(parentNode,pos,lookat,id);
 
-		if (node) return 0;
+		if (node)
+		{
+			if (!isLight) node->setMaterialFlag(video::EMF_LIGHTING, false);
+			return 0;
+		}
 		else 
 		{
 			ERROR_ADD_FAILD(id, AddCameraSceneNode);
@@ -253,7 +273,7 @@ extern "C"
 
 	int Java_zte_irrlib_scene_Scene_nativeAddBillboardSceneNode(
 		JNIEnv *env, jobject defaultObj, jdouble px, jdouble py, jdouble pz,
-		jdouble sx, jdouble sy, jint id, jint parent)
+		jdouble sx, jdouble sy, jint id, jint parent, jboolean isLight)
 	{
 		core::vector3df pos = core::vector3df(px,py,pz);
 		core::dimension2d<f32> size = core::dimension2d<f32>(sx,sy);
@@ -270,7 +290,11 @@ extern "C"
 		}
 		node = smgr->addBillboardSceneNode(parentNode,size,pos,id);
 
-		if (node) return 0;
+		if (node)
+		{
+			if (!isLight) node->setMaterialFlag(video::EMF_LIGHTING, false);
+			return 0;
+		}
 		else 
 		{
 			ERROR_ADD_FAILD(id, AddBillboardSceneNode);
@@ -280,7 +304,7 @@ extern "C"
 
 	int Java_zte_irrlib_scene_Scene_nativeAddLightSceneNode(
 		JNIEnv *env, jobject defaultObj, jdouble px, jdouble py, jdouble pz,
-		jdouble radius, jint r, jint g, jint b, jint id, jint parent)
+		jdouble radius, jint r, jint g, jint b, jint id, jint parent, jboolean isLight)
 	{
 		core::vector3df pos = core::vector3df(px,py,pz);
 		video::SColor color(0xff,r,g,b);
@@ -296,8 +320,11 @@ extern "C"
 			}
 		}
 		node = smgr->addLightSceneNode(parentNode,pos,color,radius,id);
-
-		if (node) return 0;
+		if (node)
+		{
+			if (!isLight) node->setMaterialFlag(video::EMF_LIGHTING, false);
+			return 0;
+		}
 		else 
 		{
 			ERROR_ADD_FAILD(id, AddLightSceneNode);

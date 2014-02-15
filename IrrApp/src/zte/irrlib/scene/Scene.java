@@ -27,6 +27,10 @@ public class Scene {
 		}
 	}
 	
+	public void applyLighting(boolean flag){
+		mApplyLighting = flag;
+	}
+	
 	public CameraSceneNode getActiveCamera(){
 		return mActiveCamera;
 	}
@@ -80,7 +84,8 @@ public class Scene {
 	
 	public SceneNode addEmptySceneNode(Vector3d pos, SceneNode parent){
 		SceneNode node = new SceneNode();
-		if (nativeAddEmptySceneNode(pos.x, pos.y, pos.z, getId(node), getId(parent)) != 0)
+		if (nativeAddEmptySceneNode(pos.x, pos.y, pos.z, 
+				getId(node), getId(parent), mApplyLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, parent);
@@ -89,7 +94,8 @@ public class Scene {
 	
 	public MeshSceneNode addCubeSceneNode(Vector3d pos, float size, SceneNode parent){
 		MeshSceneNode node = new MeshSceneNode();
-		if (nativeAddCubeSceneNode(pos.x, pos.y, pos.z, size, getId(node), getId(parent)) != 0)
+		if (nativeAddCubeSceneNode(pos.x, pos.y, pos.z, 
+				size, getId(node), getId(parent), mApplyLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, parent);
@@ -98,7 +104,8 @@ public class Scene {
 	
 	public MeshSceneNode addMeshSceneNode(String path, Vector3d pos, SceneNode parent){
 		MeshSceneNode node = new MeshSceneNode();
-		if (nativeAddMeshSceneNode(mEngine.getResourceDir() + path, pos.x, pos.y, pos.z, getId(node), getId(parent)) != 0)
+		if (nativeAddMeshSceneNode(mEngine.getResourceDir() + path, 
+				pos.x, pos.y, pos.z, getId(node), getId(parent), mApplyLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, parent);
@@ -107,7 +114,8 @@ public class Scene {
 	
 	public SceneNode addTextNode(String text, Vector3d pos, double size, SceneNode parent){
 		SceneNode node = new SceneNode();
-		if (nativeAddTextNode(text, pos.x, pos.y, pos.z, size, getId(node), getId(parent)) != 0)
+		if (nativeAddTextNode(text, pos.x, pos.y, pos.z,
+				size, getId(node), getId(parent), mApplyLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, parent);
@@ -116,7 +124,9 @@ public class Scene {
 	
 	public CameraSceneNode addCameraSceneNode(Vector3d pos, Vector3d lookAt, boolean isActive, SceneNode parent){
 		CameraSceneNode node = new CameraSceneNode();
-		if (nativeAddCameraSceneNode(pos.x, pos.y, pos.z, lookAt.x, lookAt.y, lookAt.z, isActive, getId(node), getId(parent)) != 0)
+		if (nativeAddCameraSceneNode(pos.x, pos.y, pos.z, 
+				lookAt.x, lookAt.y, lookAt.z, isActive, 
+				getId(node), getId(parent), mApplyLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, lookAt, parent);
@@ -125,7 +135,8 @@ public class Scene {
 	
 	public BillboardSceneNode addBillboardSceneNode(Vector3d pos, Vector2d size, SceneNode parent){
 		BillboardSceneNode node = new BillboardSceneNode();
-		if (nativeAddBillboardSceneNode(pos.x, pos.y, pos.z, size.x, size.y, getId(node), getId(parent)) != 0){
+		if (nativeAddBillboardSceneNode(pos.x, pos.y, pos.z, 
+				size.x, size.y, getId(node), getId(parent), mApplyLighting) != 0){
 			return null;
 		}
 		
@@ -137,7 +148,7 @@ public class Scene {
 		LightSceneNode node = new LightSceneNode();
 		if (nativeAddLightSceneNode(pos.x, pos.y, pos.z, radius,
 				color.r(), color.g(), color.b(), 
-				getId(node), getId(parent)) != 0){
+				getId(node), getId(parent), mApplyLighting) != 0){
 			return null;
 		}
 		
@@ -147,7 +158,8 @@ public class Scene {
 	
 	public BillboardGroup addBillboardGroup(Vector3d pos, SceneNode parent){
 		BillboardGroup node = new BillboardGroup();
-		if (nativeAddEmptySceneNode(pos.x, pos.y, pos.z, getId(node), getId(parent)) != 0){
+		if (nativeAddEmptySceneNode(pos.x, pos.y, pos.z, 
+				getId(node), getId(parent), mApplyLighting) != 0){
 			return null;
 		}
 		node.javaLoadDataAndInit(pos, parent);
@@ -156,7 +168,8 @@ public class Scene {
 	
 	public AnimateMeshSceneNode addAnimateMeshSceneNode(String path, Vector3d pos, SceneNode parent){
 		AnimateMeshSceneNode node = new AnimateMeshSceneNode();
-		if (nativeAddAnimateMeshSceneNode(path, pos.x, pos.y, pos.z, getId(node), getId(parent)) != 0){
+		if (nativeAddAnimateMeshSceneNode(path, pos.x, pos.y, pos.z,
+				getId(node), getId(parent), mApplyLighting) != 0){
 			return null;
 		}
 		node.javaLoadDataAndInit(pos, parent);
@@ -165,7 +178,8 @@ public class Scene {
 	
 	public ParticleSystemSceneNode addParticleSystemSceneNode(Vector3d pos, boolean withDefaultEmitter, SceneNode parent){
 		ParticleSystemSceneNode node = new ParticleSystemSceneNode();
-		if (nativeAddParticleSystemSceneNode(pos.x, pos.y, pos.z, withDefaultEmitter, getId(node), getId(parent)) != 0){
+		if (nativeAddParticleSystemSceneNode(pos.x, pos.y, pos.z, 
+				withDefaultEmitter, getId(node), getId(parent), mApplyLighting) != 0){
 			return null;
 		}
 		node.javaLoadDataAndInit(pos, parent);
@@ -250,6 +264,7 @@ public class Scene {
 	private SceneNode mRootNode;
 	private ArrayList<SceneNode> mNodeList;
 	private int mWidth, mHeight;
+	private boolean mApplyLighting = false;
 	
 	private Scene(Engine engine){
 		mEngine = engine;
@@ -280,38 +295,40 @@ public class Scene {
     
     //native add node API
 	private native int nativeAddEmptySceneNode(
-			double x, double y, double z, int id, int parent);
+			double x, double y, double z, int id, int parent, boolean isLight);
 	
 	private native int nativeAddCubeSceneNode(
 			double x, double y, double z, 
-			double size, int id, int parent);
+			double size, int id, int parent, boolean isLight);
 	
 	private native int nativeAddMeshSceneNode(
-			String path, double x, double y, double z, int id, int parent);
+			String path, double x, double y, double z, 
+			int id, int parent, boolean isLight);
 	
 	private native int nativeAddTextNode(
 			String text, double x, double y, double z, 
-			double size, int id, int parent);
+			double size, int id, int parent, boolean isLight);
 
 	private native int nativeAddCameraSceneNode(
 			double px, double py, double pz, 
 			double lx, double ly, double lz, 
-			boolean isActive, int id, int parent);
+			boolean isActive, int id, int parent, boolean isLight);
 	
 	private native int nativeAddBillboardSceneNode(
 			double px, double py, double pz, 
-			double sx, double sy, int id, int parent);
+			double sx, double sy, int id, int parent, boolean isLight);
 	
 	private native int nativeAddLightSceneNode(
 			double px, double py, double pz, double radius,
-			int r, int g, int b, int id, int parent);
+			int r, int g, int b, int id, int parent, boolean isLight);
 	
 	private native int nativeAddAnimateMeshSceneNode(
-			String path, double x, double y, double z, int id, int parent);
+			String path, double x, double y, double z,
+			int id, int parent, boolean isLight);
 	
 	private native int nativeAddParticleSystemSceneNode(
-			double x, double y, double z, 
-			boolean withDefaultEmitter, int id, int parent);
+			double x, double y, double z, boolean withDefaultEmitter, 
+			int id, int parent, boolean isLight);
 	
 	//native remove node
 	private native void nativeRemoveNode(int id);

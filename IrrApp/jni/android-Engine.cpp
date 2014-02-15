@@ -49,8 +49,8 @@ extern "C"
 			return -3;
 		}
 		
-		smgr->setAmbientLight(video::SColor(0,250,250,250));
-		LOGI("Engine is ready. width: %d, height: %d", gWindowWidth, gWindowHeight);
+		smgr->setAmbientLight(video::SColor(0xff,0xff,0xff,0x7f));
+		LOGI("Engine(without GUI) is ready. width: %d, height: %d", gWindowWidth, gWindowHeight);
 		_isInit = true;
 		return 0;
 	}
