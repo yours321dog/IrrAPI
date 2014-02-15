@@ -24,8 +24,24 @@ public class Engine{
 		return mUniInstance;
 	}
 	
+	public void setResourceDir(String path){
+		mResourcePath = path;
+	}
+	
+	public void setRenderer(Renderer renderer){
+		mRenderer = renderer;
+	}
+	
+	public void setRenderType(int type){
+		mRenderType = type;
+	}
+	
 	public Scene getScene(){
 		return mScene;
+	}
+	
+	public String getResourceDir(){
+		return mResourcePath;
 	}
 	
 	public Vector2i getRenderSize(){
@@ -34,7 +50,7 @@ public class Engine{
 	
 	public double getFPS(){
 		//to be implemented.
-		return 0;
+		return nativeGetFPS();
 	}
 	
 	public synchronized boolean queueEvent(Event event){
@@ -56,15 +72,6 @@ public class Engine{
 		else{
 			return mEventQueue.remove(0);
 		}
-	}
-	
-	
-	public String getResourceDir(){
-		return mResourcePath;
-	}
-	
-	public void setResourceDir(String path){
-		mResourcePath = path;
 	}
 	
 	public void copyAssetsToNative(AssetManager assetManager, boolean isMandatory) throws IOException{
@@ -90,10 +97,6 @@ public class Engine{
 		}
 	}
 	
-	public void setRenderer(Renderer renderer){
-		mRenderer = renderer;
-	}
-	
 	public synchronized void onDestroy(){
 		if (mIsInit) javaClear();
 		if (nativeIsInit()) nativeClear();
@@ -107,7 +110,7 @@ public class Engine{
 			if (mIsInit) javaClear();
 			if (nativeIsInit()) nativeClear();
 			//re-initialize
-			nativeInit();
+			nativeInit(mRenderType);
 			JavaInit();
 			mRenderer.onCreate(this);
 		}
@@ -143,20 +146,23 @@ public class Engine{
 		return (mIsInit && nativeIsInit());
 	}
 	
+	private Engine(){
+		mEventQueue = new ArrayList<Event>();
+	}
+	
 	private static Engine mUniInstance;
 	
 	private Scene mScene;
 	private Renderer mRenderer;
+	private int mRenderType = EGL10Ext.EGL_OPENGL_ES1_BIT;
 	private ArrayList<Event> mEventQueue;
 	
 	private String mResourcePath;
 	private boolean mIsInit;
 	
-	private Engine(){
-		mEventQueue = new ArrayList<Event>();
-	}
 
-	private native int nativeInit();
+
+	private native int nativeInit(int rendertype);
 	private native void nativeClear();
 	private native boolean nativeIsInit();
 	

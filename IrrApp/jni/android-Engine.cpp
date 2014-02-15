@@ -11,8 +11,12 @@
 extern "C"
 {
 	int Java_zte_irrlib_Engine_nativeInit(
-		JNIEnv *env, jobject defaultObj)
+		JNIEnv *env, jobject defaultObj, int type)
 	{
+		video::E_DRIVER_TYPE videoType =  video::EDT_NULL;
+		if (type == 0x00000001) videoType = video::EDT_OGLES1;
+		else if (type == 0x00000004) videoType = video::EDT_OGLES2;
+		
 		importGLInit();
 		
 		if (device) 
@@ -24,7 +28,7 @@ extern "C"
 			collMgr = 0;
 		}
 		
-		device = createDevice( video::EDT_OGLES1, 
+		device = createDevice( videoType, 
 			dimension2d<u32>(gWindowWidth, gWindowHeight), 16, false, false, false, 0);
 
 		if (!device)

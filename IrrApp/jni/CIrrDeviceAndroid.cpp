@@ -9,7 +9,13 @@
 
 #include "os.h"
 	
-#include <android/log.h>
+#include "android-global.h"
+#ifdef LOG_TAG
+#undef LOG_TAG
+#endif
+
+#define LOG_TAG "AndroidDevice"
+#define CREATED_DRIVER(driver) LOGI("%s driver created.", #driver)
 
 namespace irr
 {
@@ -29,13 +35,12 @@ namespace irr
 CIrrDeviceAndroid::CIrrDeviceAndroid(const SIrrlichtCreationParameters& params)
 	: CIrrDeviceStub(params)
 {
-	__android_log_print(ANDROID_LOG_INFO, "Irrlicht", "CIrrDeviceAndroid::CIrrDeviceAndroid");
+	//__android_log_print(ANDROID_LOG_INFO, "Irrlicht", "CIrrDeviceAndroid::CIrrDeviceAndroid");
 	
 	createDriver();
 
 	if (VideoDriver)
 		createGUIAndScene();
-	
 }
 
 //! destructor
@@ -46,7 +51,7 @@ CIrrDeviceAndroid::~CIrrDeviceAndroid()
 //! create the driver
 void CIrrDeviceAndroid::createDriver()
 {
-	__android_log_print(ANDROID_LOG_INFO, "Irrlicht", "CIrrDeviceAndroid::createDriver");
+	//__android_log_print(ANDROID_LOG_INFO, "Irrlicht", "CIrrDeviceAndroid::createDriver");
 	switch(CreationParams.DriverType)
 	{
 	case video::EDT_OGLES1:
@@ -55,7 +60,8 @@ void CIrrDeviceAndroid::createDriver()
 				video::SExposedVideoData data;
 				VideoDriver = video::createOGLES1Driver(
 					CreationParams, data, FileSystem);
-				__android_log_print(ANDROID_LOG_INFO,"Irrlicht","CreateDriver():EDT_OGLES1");
+				//__android_log_print(ANDROID_LOG_INFO,"Irrlicht","CreateDriver():EDT_OGLES1");
+				CREATED_DRIVER(OGL_ESv1);
 			}
 		#else
 			__android_log_print(ANDROID_LOG_INFO,"Irrlicht","No OpenGL-ES1 support compiled in.");
@@ -67,7 +73,8 @@ void CIrrDeviceAndroid::createDriver()
                 video::SExposedVideoData data;
                 VideoDriver = video::createOGLES2Driver(
                     CreationParams, data, FileSystem);
-				__android_log_print(ANDROID_LOG_INFO,"Irrlicht","CreateDriver():EDT_OGLES2");
+				//__android_log_print(ANDROID_LOG_INFO,"Irrlicht","CreateDriver():EDT_OGLES2");
+				CREATED_DRIVER(OGL_ESv2);
             }
 		#else
             __android_log_print(ANDROID_LOG_INFO,"Irrlicht","No OpenGL-ES2 support compiled in.");

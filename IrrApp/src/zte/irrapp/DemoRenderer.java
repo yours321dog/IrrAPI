@@ -16,7 +16,8 @@ public class DemoRenderer implements Renderer {
 		Scene scene = engine.getScene();
 		cube.setRotation(new Vector3d(1, 0.2, 0), SceneNode.RELATIVE_TRANSFORM);
 		scene.drawAllNodes();
-		
+		count = (count+1)%100;
+		if (count == 0) WLog.i("fps: " + engine.getFPS());
 	}
 
 	@Override
@@ -32,4 +33,5 @@ public class DemoRenderer implements Renderer {
 	}
 
 	private MeshSceneNode cube;
+	private int count;
 }

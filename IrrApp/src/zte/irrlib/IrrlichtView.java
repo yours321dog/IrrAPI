@@ -18,25 +18,28 @@ public class IrrlichtView extends GLSurfaceView {
 	
 	public IrrlichtView(Context context) {		
 		super(context);
+		mEngine = Engine.getInstance();
 	}
 	
 	public IrrlichtView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		mEngine = Engine.getInstance();
 	}
 	
 	public void setRecommendEGLConfigChooser(int sampleLevel){
 		setEGLConfigChooser(new RecommedEGLConfigChooser(mRenderType, sampleLevel));
 	}
 	
-	//引擎尚未收到影响，待完成
 	public void enableGLES2(boolean flag){
 		if (flag){
 			mRenderType = EGL10Ext.EGL_OPENGL_ES2_BIT;
 			setEGLContextClientVersion(2);
+			mEngine.setRenderType(EGL10Ext.EGL_OPENGL_ES2_BIT);
 		}
 		else{
 			mRenderType = EGL10Ext.EGL_OPENGL_ES1_BIT;
 			setEGLContextClientVersion(1);
+			mEngine.setRenderType(EGL10Ext.EGL_OPENGL_ES1_BIT);
 		}
 	}
 	
@@ -63,7 +66,6 @@ public class IrrlichtView extends GLSurfaceView {
 		//since this method will automatically call GLSurfaceView.setRenderer, the same principle
 		//above should be followed.
 		
-		mEngine = Engine.getInstance();
 		mEngine.setRenderer(renderer);
 		super.setRenderer(new GLSurfaceView.Renderer() {
 			public void onSurfaceCreated(GL10 unused, EGLConfig config) {mEngine.onSurfaceCreated();}
