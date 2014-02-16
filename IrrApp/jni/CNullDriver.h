@@ -598,6 +598,9 @@ namespace video
 				const c8* name=0);
 
 		virtual bool checkDriverReset() {return false;}
+		
+		//add by roy
+		void addTexture(video::ITexture* surface);
 	protected:
 
 		//! deletes all textures

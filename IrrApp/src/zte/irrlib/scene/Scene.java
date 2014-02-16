@@ -27,8 +27,8 @@ public class Scene {
 		}
 	}
 	
-	public void applyLighting(boolean flag){
-		mApplyLighting = flag;
+	public void enableLighting(boolean flag){
+		mEnableLighting = flag;
 	}
 	
 	public CameraSceneNode getActiveCamera(){
@@ -85,7 +85,7 @@ public class Scene {
 	public SceneNode addEmptySceneNode(Vector3d pos, SceneNode parent){
 		SceneNode node = new SceneNode();
 		if (nativeAddEmptySceneNode(pos.x, pos.y, pos.z, 
-				getId(node), getId(parent), mApplyLighting) != 0)
+				getId(node), getId(parent), mEnableLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, parent);
@@ -95,7 +95,7 @@ public class Scene {
 	public MeshSceneNode addCubeSceneNode(Vector3d pos, float size, SceneNode parent){
 		MeshSceneNode node = new MeshSceneNode();
 		if (nativeAddCubeSceneNode(pos.x, pos.y, pos.z, 
-				size, getId(node), getId(parent), mApplyLighting) != 0)
+				size, getId(node), getId(parent), mEnableLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, parent);
@@ -105,7 +105,7 @@ public class Scene {
 	public MeshSceneNode addMeshSceneNode(String path, Vector3d pos, SceneNode parent){
 		MeshSceneNode node = new MeshSceneNode();
 		if (nativeAddMeshSceneNode(mEngine.getResourceDir() + path, 
-				pos.x, pos.y, pos.z, getId(node), getId(parent), mApplyLighting) != 0)
+				pos.x, pos.y, pos.z, getId(node), getId(parent), mEnableLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, parent);
@@ -115,7 +115,7 @@ public class Scene {
 	public SceneNode addTextNode(String text, Vector3d pos, double size, SceneNode parent){
 		SceneNode node = new SceneNode();
 		if (nativeAddTextNode(text, pos.x, pos.y, pos.z,
-				size, getId(node), getId(parent), mApplyLighting) != 0)
+				size, getId(node), getId(parent), mEnableLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, parent);
@@ -126,7 +126,7 @@ public class Scene {
 		CameraSceneNode node = new CameraSceneNode();
 		if (nativeAddCameraSceneNode(pos.x, pos.y, pos.z, 
 				lookAt.x, lookAt.y, lookAt.z, isActive, 
-				getId(node), getId(parent), mApplyLighting) != 0)
+				getId(node), getId(parent), mEnableLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, lookAt, parent);
@@ -136,7 +136,7 @@ public class Scene {
 	public BillboardSceneNode addBillboardSceneNode(Vector3d pos, Vector2d size, SceneNode parent){
 		BillboardSceneNode node = new BillboardSceneNode();
 		if (nativeAddBillboardSceneNode(pos.x, pos.y, pos.z, 
-				size.x, size.y, getId(node), getId(parent), mApplyLighting) != 0){
+				size.x, size.y, getId(node), getId(parent), mEnableLighting) != 0){
 			return null;
 		}
 		
@@ -148,7 +148,7 @@ public class Scene {
 		LightSceneNode node = new LightSceneNode();
 		if (nativeAddLightSceneNode(pos.x, pos.y, pos.z, radius,
 				color.r(), color.g(), color.b(), 
-				getId(node), getId(parent), mApplyLighting) != 0){
+				getId(node), getId(parent), mEnableLighting) != 0){
 			return null;
 		}
 		
@@ -159,7 +159,7 @@ public class Scene {
 	public BillboardGroup addBillboardGroup(Vector3d pos, SceneNode parent){
 		BillboardGroup node = new BillboardGroup();
 		if (nativeAddEmptySceneNode(pos.x, pos.y, pos.z, 
-				getId(node), getId(parent), mApplyLighting) != 0){
+				getId(node), getId(parent), mEnableLighting) != 0){
 			return null;
 		}
 		node.javaLoadDataAndInit(pos, parent);
@@ -169,7 +169,7 @@ public class Scene {
 	public AnimateMeshSceneNode addAnimateMeshSceneNode(String path, Vector3d pos, SceneNode parent){
 		AnimateMeshSceneNode node = new AnimateMeshSceneNode();
 		if (nativeAddAnimateMeshSceneNode(path, pos.x, pos.y, pos.z,
-				getId(node), getId(parent), mApplyLighting) != 0){
+				getId(node), getId(parent), mEnableLighting) != 0){
 			return null;
 		}
 		node.javaLoadDataAndInit(pos, parent);
@@ -179,7 +179,7 @@ public class Scene {
 	public ParticleSystemSceneNode addParticleSystemSceneNode(Vector3d pos, boolean withDefaultEmitter, SceneNode parent){
 		ParticleSystemSceneNode node = new ParticleSystemSceneNode();
 		if (nativeAddParticleSystemSceneNode(pos.x, pos.y, pos.z, 
-				withDefaultEmitter, getId(node), getId(parent), mApplyLighting) != 0){
+				withDefaultEmitter, getId(node), getId(parent), mEnableLighting) != 0){
 			return null;
 		}
 		node.javaLoadDataAndInit(pos, parent);
@@ -261,10 +261,9 @@ public class Scene {
 	
 	private Engine mEngine;
 	private CameraSceneNode mActiveCamera;
-	private SceneNode mRootNode;
 	private ArrayList<SceneNode> mNodeList;
 	private int mWidth, mHeight;
-	private boolean mApplyLighting = false;
+	private boolean mEnableLighting = true;
 	
 	private Scene(Engine engine){
 		mEngine = engine;

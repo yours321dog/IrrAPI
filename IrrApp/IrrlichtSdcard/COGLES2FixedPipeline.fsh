@@ -61,6 +61,7 @@ vec4 render2D(void)
 {
 	vec4 color = varVertexColor;
 	vec4 texel = texture2D(uTextureUnit0, varTexCoord[0].xy);
+	/*problems in here*/
 	if(uUseTexture[0])
 	{
 		color *= texel;

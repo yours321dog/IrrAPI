@@ -2,9 +2,9 @@ package zte.irrapp;
 
 import zte.irrlib.Engine;
 import zte.irrlib.Engine.Renderer;
-import zte.irrlib.core.Color4i;
-import zte.irrlib.core.Vector2i;
+import zte.irrlib.core.Color3i;
 import zte.irrlib.core.Vector3d;
+import zte.irrlib.scene.LightSceneNode;
 import zte.irrlib.scene.MeshSceneNode;
 import zte.irrlib.scene.Scene;
 import zte.irrlib.scene.SceneNode;
@@ -20,11 +20,14 @@ public class DemoRenderer implements Renderer {
 		if (count == 0) WLog.i("fps: " + engine.getFPS());
 	}
 
-	public void onCreate(Engine engine) {
+	public void onCreate(Engine engine) {		
 		Scene scene = engine.getScene();
-		scene.applyLighting(true);
+		scene.enableLighting(true);
+		
 		cube = scene.addCubeSceneNode(new Vector3d(0, 0, 0), 10, null);
 		cube.setPosition(new Vector3d(0,0,20));
+		
+		light = scene.addLightSceneNode(new Vector3d(30,30,-30), 100, new Color3i(0xff,0,0), null);
 	}
 	
 	public void onResize(Engine engine, int width, int height) {
@@ -32,5 +35,6 @@ public class DemoRenderer implements Renderer {
 	}
 
 	private MeshSceneNode cube;
+	private LightSceneNode light;
 	private int count;
 }

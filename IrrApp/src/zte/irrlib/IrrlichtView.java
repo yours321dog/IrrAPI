@@ -102,6 +102,8 @@ public class IrrlichtView extends GLSurfaceView {
 
 class RecommedEGLConfigChooser implements GLSurfaceView.EGLConfigChooser{
 	
+	public static final String TAG = "IrrConfigChooser";
+	
 	public RecommedEGLConfigChooser(int renderType, int sampleLevel){
 		mRenderType = renderType;
 		mSampleLevel = sampleLevel;
@@ -126,7 +128,8 @@ class RecommedEGLConfigChooser implements GLSurfaceView.EGLConfigChooser{
 	        if (!egl.eglChooseConfig(display, configSpec, null, 0, numConfigs)) {
 	            throw new IllegalArgumentException("eglChooseConfig failed: code 1");
 	        }
-	
+	        mState = 1;
+	        
 	        if (numConfigs[0] <= 0) {
 	            // No normal multisampling configuration was found. Try to create a
 	            // multisampling configuration, for the nVidia Tegra2.
@@ -146,6 +149,7 @@ class RecommedEGLConfigChooser implements GLSurfaceView.EGLConfigChooser{
 	            if (!egl.eglChooseConfig(display, configSpec, null, 0, numConfigs)) {
 	                throw new IllegalArgumentException("eglChooseConfig failed: code 2");
 	            }
+	            mState = 2;
 	        }
         }
         
@@ -163,10 +167,25 @@ class RecommedEGLConfigChooser implements GLSurfaceView.EGLConfigChooser{
 	        if (!egl.eglChooseConfig(display, configSpec, null, 0, numConfigs)) {
 	            throw new IllegalArgumentException("eglChooseConfig failed: code 3");
 	        }
-	
+	        mState = 3;
 	        if (numConfigs[0] <= 0) {
 	          throw new IllegalArgumentException("No configs match configSpec!");
 	        }
+        }
+        
+        //logger
+        switch (mState){
+        case 1:
+        	Log.d(TAG, "Normal: level " + mSampleLevel);
+        	break;
+        case 2:
+        	Log.d(TAG, "Coverage: level " + mSampleLevel);
+        	break;
+        case 3:
+        	Log.d(TAG, "None: level " + mSampleLevel);
+        	break;
+        default:
+        	Log.w(TAG, "Unexpected condition.");
         }
 
         // Get all matching configurations.
@@ -203,7 +222,8 @@ class RecommedEGLConfigChooser implements GLSurfaceView.EGLConfigChooser{
     }
 	
 	protected int mRenderType = EGL10Ext.EGL_OPENGL_ES1_BIT;
-	protected int mSampleLevel = 4;
+	protected int mSampleLevel = 0;
+	protected int mState = 0;
 	
 	//create to avoid frequent new operation in findConfigAttrib
 	private int tmp[] = new int[1];

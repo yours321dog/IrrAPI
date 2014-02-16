@@ -1,18 +1,6 @@
 #include <jni.h>
-#include <android/log.h>
 #include <irrlicht.h>
-using namespace irr;
-
-using namespace core;
-using namespace core;
-using namespace scene;
-using namespace video;
-using namespace io;
-using namespace gui;
-
-extern IrrlichtDevice *device;
-extern IVideoDriver* driver;
-extern ISceneManager* smgr;
+#include "android-global.h"
 
 /* class SLight in SLight.java
 public class SLight {

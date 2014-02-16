@@ -1,4 +1,4 @@
-package zte.irrlib.scene;
+ package zte.irrlib.scene;
 
 import zte.irrlib.core.SLight;
 

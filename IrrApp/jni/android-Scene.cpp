@@ -320,9 +320,9 @@ extern "C"
 			}
 		}
 		node = smgr->addLightSceneNode(parentNode,pos,color,radius,id);
+		
 		if (node)
 		{
-			if (!isLight) node->setMaterialFlag(video::EMF_LIGHTING, false);
 			return 0;
 		}
 		else 
