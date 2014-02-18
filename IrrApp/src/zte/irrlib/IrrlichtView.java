@@ -43,6 +43,10 @@ public class IrrlichtView extends GLSurfaceView {
 		}
 	}
 	
+	public void startMediaPlayer(){
+		mEngine.startMediaPlayer();
+	}
+	
 	//method replacing GLSurfaceView.setRenderer.
 	public void setEngineRenderer(Engine.Renderer renderer){
 		/* source: http://developer.android.com/reference/android/opengl/GLSurfaceView.html

@@ -1,4 +1,7 @@
 #include <sys/time.h>
+#include "android-global.h"
+#include <android/bitmap.h>
+#include "COGLESTexture.h"
 
 using namespace irr;
 using namespace core;
@@ -18,6 +21,8 @@ stringc gSdCardPath = "/sdcard/";
 SColor backColor = SColor(255,180,180,255);
 
 bool _isInit = false;
+char _extPrefix[] = "<external>";
+ITexture *_extTex = 0;
 
 long _getTime()
 {
@@ -27,7 +32,7 @@ long _getTime()
     return (long)(now.tv_sec*1000 + now.tv_usec/1000);
 }
 
-Image* createImageFromBitmap(JNIEnv* env, jobject jbitmap)
+IImage* createImageFromBitmap(JNIEnv* env, jobject jbitmap)
 {
 	if (device && !driver)
 		driver = device->getVideoDriver();
@@ -60,20 +65,26 @@ Image* createImageFromBitmap(JNIEnv* env, jobject jbitmap)
 	
 	if (format == ECF_UNKNOWN)
 	{
-		LOGE("Unsurpported color format!")
+		LOGE("Unsurpported color format!");
 		return 0;
 	}
 	
 	void *pixels = 0;
 	
-	if ((result = AndroidBitmap_lockPixels(env, jbitmap, pixels))) < 0 || pixels == 0)
+	if ((result = AndroidBitmap_lockPixels(env, jbitmap, &pixels)) < 0 || pixels == 0)
 	{
 		LOGE("AndroidBitmap_lockPixels() failed! error = %d", result);
 		return 0;
 	}
 	
-	Image* image = driver->createImageFromData(format, 
+	IImage* image = driver->createImageFromData(format, 
 		dimension2d<u32>(bitmapInfo.width, bitmapInfo.height), pixels);
 		
 	return image;
+}
+
+//not safe, will cause fatal error when it is not a opengles texture.
+int getOpenGLESTextureID(const ITexture* tex)
+{
+	return ((COGLES1Texture*)tex)->getOGLES1TextureName();
 }

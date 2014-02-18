@@ -1435,6 +1435,7 @@ bool COGLES1Driver::setTexture(u32 stage, const video::ITexture* texture)
 	if (!texture)
 	{
 		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_TEXTURE_EXTERNAL_OES);
 		return true;
 	}
 	else
@@ -1442,12 +1443,26 @@ bool COGLES1Driver::setTexture(u32 stage, const video::ITexture* texture)
 		if (texture->getDriverType() != EDT_OGLES1)
 		{
 			glDisable(GL_TEXTURE_2D);
+			glDisable(GL_TEXTURE_EXTERNAL_OES);
 			os::Printer::log("Fatal Error: Tried to set a texture not owned by this driver.", ELL_ERROR);
 			return false;
 		}
-
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D,
+		
+		GLuint target, untarget;
+		if (((COGLES1Texture*)texture)->isExternal())
+		{
+			target = GL_TEXTURE_EXTERNAL_OES;
+			untarget = GL_TEXTURE_2D;
+		}
+		else
+		{
+			target = GL_TEXTURE_2D;
+			untarget = GL_TEXTURE_EXTERNAL_OES;
+		}
+		
+		glEnable(target);
+		glDisable(untarget);
+		glBindTexture(target,
 			static_cast<const COGLES1Texture*>(texture)->getOGLES1TextureName());
 	}
 	return true;
@@ -1815,6 +1830,8 @@ void COGLES1Driver::setBasicRenderStates(const SMaterial& material, const SMater
 
 		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
 			(material.TextureLayer[i].BilinearFilter || material.TextureLayer[i].TrilinearFilter) ? GL_LINEAR : GL_NEAREST);
+		glTexParameteri( GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER,
+			(material.TextureLayer[i].BilinearFilter || material.TextureLayer[i].TrilinearFilter) ? GL_LINEAR : GL_NEAREST);		
 
 		if (material.getTexture(i) && material.getTexture(i)->hasMipMaps())
 			// the npot extensions need some checks, because APPLE
@@ -1826,6 +1843,10 @@ void COGLES1Driver::setBasicRenderStates(const SMaterial& material, const SMater
 					material.TextureLayer[i].TrilinearFilter ? GL_LINEAR:
 					material.TextureLayer[i].BilinearFilter ? GL_LINEAR:
 					GL_NEAREST);
+				glTexParameteri( GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER,
+					material.TextureLayer[i].TrilinearFilter ? GL_LINEAR:
+					material.TextureLayer[i].BilinearFilter ? GL_LINEAR:
+					GL_NEAREST);					
 			}
 			else
 			{
@@ -1833,11 +1854,17 @@ void COGLES1Driver::setBasicRenderStates(const SMaterial& material, const SMater
 					material.TextureLayer[i].TrilinearFilter ? GL_LINEAR_MIPMAP_LINEAR :
 					material.TextureLayer[i].BilinearFilter ? GL_LINEAR_MIPMAP_NEAREST :
 					GL_NEAREST_MIPMAP_NEAREST );
+				glTexParameteri( GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER,
+					material.TextureLayer[i].TrilinearFilter ? GL_LINEAR_MIPMAP_LINEAR :
+					material.TextureLayer[i].BilinearFilter ? GL_LINEAR_MIPMAP_NEAREST :
+					GL_NEAREST_MIPMAP_NEAREST );
 			}
 		else
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 				(material.TextureLayer[i].BilinearFilter || material.TextureLayer[i].TrilinearFilter) ? GL_LINEAR : GL_NEAREST);
-
+			glTexParameteri( GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER,
+				(material.TextureLayer[i].BilinearFilter || material.TextureLayer[i].TrilinearFilter) ? GL_LINEAR : GL_NEAREST);
+				
 #ifdef GL_EXT_texture_filter_anisotropic
 		if (FeatureAvailable[IRR_EXT_texture_filter_anisotropic])
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,

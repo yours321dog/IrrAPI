@@ -100,6 +100,7 @@ public class Engine{
 	public synchronized void onDestroy(){
 		if (mIsInit) javaClear();
 		if (nativeIsInit()) nativeClear();
+		getScene().getMediaPlayer().release();
 	}
 	
 	public synchronized void onSurfaceCreated(){
@@ -126,6 +127,10 @@ public class Engine{
 		nativeBeginScene();
 		mRenderer.onDrawFrame(this);
 		nativeEndScene();
+	}
+	
+	public void startMediaPlayer(){
+		getScene().getMediaPlayer().start();
 	}
 	
 	private int JavaInit(){

@@ -17,7 +17,7 @@ extern "C"
 		if (type == 0x00000001) videoType = video::EDT_OGLES1;
 		else if (type == 0x00000004) videoType = video::EDT_OGLES2;
 		
-		importGLInit();
+		//importGLInit();
 		
 		if (device) 
 		{

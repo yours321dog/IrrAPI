@@ -43,6 +43,6 @@ LOCAL_SRC_FILES := \
      $(BZIP2OBJ)
 
 
-LOCAL_LDLIBS := -lGLESv1_CM -ldl -llog -lGLESv2
+LOCAL_LDLIBS := -lGLESv1_CM -ldl -llog -lGLESv2 -ljnigraphics 
 
 include $(BUILD_SHARED_LIBRARY)

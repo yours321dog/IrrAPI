@@ -606,9 +606,6 @@ namespace video
 
 		//! opens the file and loads it into the surface
 		video::ITexture* loadTextureFromFile(io::IReadFile* file, const io::path& hashName = "");
-		
-		//! adds a surface, not loaded or created by the Irrlicht Engine
-		void addTexture(video::ITexture* surface);
 
 		//! adds a surface, not loaded or created by the Irrlicht Engine
 		void addTexture(video::ITexture* surface);

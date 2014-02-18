@@ -2,9 +2,9 @@
 #ifndef __ANDOIRD_GLOBAL_H_INCLUDED__
 #define __ANDOIRD_GLOBAL_H_INCLUDED__
 
-#include <android/log.h>
 #include <irrlicht.h>
-#include <bitmap.h>
+#include <android/log.h>
+#include <android/bitmap.h>
 
 using namespace irr;
 using namespace core;
@@ -14,8 +14,8 @@ using namespace io;
 using namespace gui;
 
 long _getTime();
-void importGLInit();
-Image* createImageFromBitmap(JNIEnv* env, jobject jbitmap);
+IImage* createImageFromBitmap(JNIEnv* env, jobject jbitmap);
+int getOpenGLESTextureID(const ITexture* tex);
 
 #define LOG_TAG "irrlicht engine"
 
@@ -37,8 +37,6 @@ Image* createImageFromBitmap(JNIEnv* env, jobject jbitmap);
 #define INFO_ADD_SUCCEED(id, funcName) \
 	LOGI("Add Node(id: %d) success! In Function: %s", id, #funcName)
 	
-
-
 extern IrrlichtDevice *device;
 extern IVideoDriver* driver;
 extern ISceneManager* smgr;
@@ -50,5 +48,7 @@ extern stringc gSdCardPath;
 extern video::SColor backColor;
 
 extern bool _isInit;
+extern char _extPrefix[];
+extern ITexture* _extTex;
 
 #endif // __ANDOIRD_GLOBAL_H_INCLUDED__

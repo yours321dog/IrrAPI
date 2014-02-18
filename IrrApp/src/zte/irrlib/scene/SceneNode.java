@@ -15,18 +15,20 @@ public class SceneNode {
 	
 	//public static final SceneNode NULL_SCENE_NODE;
 	
-	public static final int TYPE_NULL = 0x00;
-	public static final int TYPE_COMMON = 0x01;
-	public static final int TYPE_MESH = 0x02;
-	public static final int TYPE_ANIMATE_MESH = 0x03;
-	public static final int TYPE_LIGHT = 0x04;
-	public static final int TYPE_BILLBOARD = 0x05;
-	public static final int TYPE_BILLBOARD_GROUP = 0x06;
-	public static final int TYPE_CAMERA = 0x07;
-	public static final int TYPE_PARTICLE_SYSTEM = 0x08;
+	public static final int TYPE_NULL = 0x00000000;
+	public static final int TYPE_COMMON = 0x00000001;
+	public static final int TYPE_MESH = 0x00000102;
+	public static final int TYPE_ANIMATE_MESH = 0x00000103;
+	public static final int TYPE_LIGHT = 0x00000004;
+	public static final int TYPE_BILLBOARD = 0x00001005;
+	public static final int TYPE_BILLBOARD_GROUP = 0x00000006;
+	public static final int TYPE_CAMERA = 0x00000007;
+	public static final int TYPE_PARTICLE_SYSTEM = 0x00000008;
 	
 	public static final int ABSOLUTE_TRANSFORM = 0;
 	public static final int RELATIVE_TRANSFORM = 1;
+	
+	public static final int FLAG_MATERIAL_OWNER = 0x00001000;
 	
 	public static boolean setScene(Scene scene){
 		if (scene == null) return false;

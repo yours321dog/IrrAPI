@@ -9,6 +9,7 @@ import zte.irrlib.core.Color4i;
 import zte.irrlib.core.Vector2d;
 import zte.irrlib.core.Vector2i;
 import zte.irrlib.core.Vector3d;
+import android.media.MediaPlayer;
 
 public class Scene {
 		
@@ -185,6 +186,21 @@ public class Scene {
 		node.javaLoadDataAndInit(pos, parent);
 		return node;
 	}
+	
+	public TextureMediaPlayer getMediaPlayer(){
+		
+		if (mMediaPlayer == null){
+			mMediaPlayer = new TextureMediaPlayer();
+			mMediaPlayer.setTexId(nativeGetMediaTextureId());
+			mMediaPlayer.setDataSource("/storage/extSdCard/irrmedia/media.ts");
+		}
+
+		return mMediaPlayer;
+	}
+	
+	public void setMediaTexture(MeshSceneNode node, int materialId){
+		nativeSetMediaTexture(materialId, getId(node));
+	}
 
 	public void removeNode(SceneNode node){
 		unregisterNode(node);
@@ -264,6 +280,7 @@ public class Scene {
 	private ArrayList<SceneNode> mNodeList;
 	private int mWidth, mHeight;
 	private boolean mEnableLighting = true;
+	private TextureMediaPlayer mMediaPlayer;
 	
 	private Scene(Engine engine){
 		mEngine = engine;
@@ -332,4 +349,7 @@ public class Scene {
 	//native remove node
 	private native void nativeRemoveNode(int id);
 	private native void nativeClear();
+	
+	private native int nativeGetMediaTextureId();
+	private native void nativeSetMediaTexture(int materialId, int id);
 }

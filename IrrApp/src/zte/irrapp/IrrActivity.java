@@ -2,12 +2,16 @@
 package zte.irrapp;
 
 import zte.irrlib.IrrlichtView;
+import zte.irrlib.scene.TextureMediaPlayer;
 import zte.test.irrapp.R;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 public class IrrActivity extends Activity {
 	IrrlichtView mDemo;
+	Button button;
 	protected String TAG = "IrrActivity";
 
 	@Override
@@ -17,6 +21,14 @@ public class IrrActivity extends Activity {
 		mDemo = (IrrlichtView)findViewById(R.id.irrview);
 		mDemo.setRecommendEGLConfigChooser(8);
 		mDemo.setEngineRenderer(new DemoRenderer());
+		
+		button = (Button)findViewById(R.id.button_start);
+		button.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View view) {
+				mDemo.startMediaPlayer();
+			}
+		});
 	}
 	
 	@Override
