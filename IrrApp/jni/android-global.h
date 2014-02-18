@@ -4,6 +4,7 @@
 
 #include <android/log.h>
 #include <irrlicht.h>
+#include <bitmap.h>
 
 using namespace irr;
 using namespace core;
@@ -12,8 +13,9 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-extern long _getTime();
-extern void importGLInit();
+long _getTime();
+void importGLInit();
+Image* createImageFromBitmap(JNIEnv* env, jobject jbitmap);
 
 #define LOG_TAG "irrlicht engine"
 

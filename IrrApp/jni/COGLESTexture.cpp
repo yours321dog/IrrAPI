@@ -28,7 +28,8 @@ COGLES1Texture::COGLES1Texture(IImage* origImage, const io::path& name, COGLES1D
 	// PixelFormat(GL_BGRA),
 	PixelType(GL_UNSIGNED_BYTE), MipLevelStored(0),
 	HasMipMaps(true), IsRenderTarget(false), AutomaticMipmapUpdate(false),
-	UseStencil(false), ReadOnlyLock(false), KeepImage(true)
+	UseStencil(false), ReadOnlyLock(false), KeepImage(true),
+	IsExternal(false)
 {
 	#ifdef _DEBUG
 	setDebugName("COGLES1Texture");
@@ -61,7 +62,8 @@ COGLES1Texture::COGLES1Texture(const io::path& name, COGLES1Driver* driver)
 	TextureName(0), InternalFormat(GL_RGBA), PixelFormat(GL_RGBA),
 	PixelType(GL_UNSIGNED_BYTE), MipLevelStored(0),
 	HasMipMaps(true), IsRenderTarget(false), AutomaticMipmapUpdate(false),
-	ReadOnlyLock(false), KeepImage(true)
+	ReadOnlyLock(false), KeepImage(true),
+	IsExternal(false)
 {
 	#ifdef _DEBUG
 	setDebugName("COGLES1Texture");
@@ -787,6 +789,22 @@ bool checkFBOStatus(COGLES1Driver* Driver)
 	return false;
 }
 #endif
+
+COGLES1TextureExt::COGLES1TextureExt(const io::path& name, COGLES1Driver* driver):
+COGLES1Texture(name, driver)
+{
+	#ifdef _DEBUG
+	setDebugName("COGLES1TextureExt");
+	#endif
+
+	IsExternal = true;
+	glGenTextures(1, &TextureName);
+
+	ImageSize.Width = ImageSize.Height = 0;
+}
+
+COGLES1TextureExt::~COGLES1TextureExt(){}
+
 
 } // end namespace video
 } // end namespace irr

@@ -82,6 +82,9 @@ public:
 	//! sets whether this texture is intended to be used as a render target.
 	void setIsRenderTarget(bool isTarget);
 
+	//! Is it a external texture?
+	bool isExternal(){return IsExternal;}
+
 protected:
 
 	//! protected constructor with basic setup, no GL texture name created, for derived classes
@@ -115,6 +118,26 @@ protected:
 	bool UseStencil;
 	bool ReadOnlyLock;
 	bool KeepImage;
+
+	bool IsExternal;
+};
+
+class COGLES1TextureExt: public COGLES1Texture
+{
+public:
+
+	//! constructor
+	COGLES1TextureExt(const io::path& name, COGLES1Driver* driver = 0);
+
+	//! destructor
+	virtual ~COGLES1TextureExt();
+
+	//! lock function
+	virtual void* lock(bool readOnly = false, u32 mipmapLevel=0){return 0;}
+
+	//! unlock function
+	virtual void unlock(){}
+
 };
 
 

@@ -1499,7 +1499,8 @@ inline void COGLES1Driver::createGLTextureMatrix(GLfloat *o, const core::matrix4
 //! returns a device dependent texture from a software surface (IImage)
 video::ITexture* COGLES1Driver::createDeviceDependentTexture(IImage* surface, const io::path& name, void* mipmapData)
 {
-	return new COGLES1Texture(surface, name, this, mipmapData);
+	if (!surface) return new COGLES1TextureExt(name, this);
+	else return new COGLES1Texture(surface, name, this, mipmapData);
 }
 
 

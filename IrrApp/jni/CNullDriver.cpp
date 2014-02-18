@@ -385,6 +385,12 @@ ITexture* CNullDriver::getTexture(const io::path& filename)
 	if (texture)
 		return texture;
 
+	//check if it's external texture
+	/*f (checkExternalTexture(name))
+	{
+		return addExternalTexture();
+	}*/
+	
 	// Now try to open the file using the complete path.
 	io::IReadFile* file = FileSystem->createAndOpenFile(absolutePath);
 
@@ -507,9 +513,10 @@ video::ITexture* CNullDriver::findTexture(const io::path& filename)
 
 
 //! Creates a texture from a loaded IImage.
+//! If name has a prefix of <external>, it is an external texture.
 ITexture* CNullDriver::addTexture(const io::path& name, IImage* image, void* mipmapData)
 {
-	if ( 0 == name.size() || !image)
+	if ( 0 == name.size() || (!image && (name.subString(0, 10) == "<external>")))
 		return 0;
 
 	ITexture* t = createDeviceDependentTexture(image, name, mipmapData);
