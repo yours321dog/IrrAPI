@@ -9,6 +9,8 @@ import zte.irrlib.scene.MeshSceneNode;
 import zte.irrlib.scene.Scene;
 import zte.irrlib.scene.SceneNode;
 import zte.irrlib.scene.TextureMediaPlayer;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 public class DemoRenderer implements Renderer {
 
@@ -29,6 +31,8 @@ public class DemoRenderer implements Renderer {
 		
 		cube = scene.addCubeSceneNode(new Vector3d(0, 0, 0), 10, null);
 		cube.setPosition(new Vector3d(0,0,20));
+		//Bitmap bitmap = BitmapFactory.decodeFile("/storage/extSdCard/irrmedia/test2.jpg");
+		//cube.setTexture(bitmap, 0);
 		//cube.setTexture("/storage/extSdCard/irrmedia/test2.jpg", 0);
 		scene.setMediaTexture(cube, 0);
 		
@@ -37,6 +41,12 @@ public class DemoRenderer implements Renderer {
 	
 	public void onResize(Engine engine, int width, int height) {
 		
+	}
+	
+	public void startPlayer(){
+		/*if (mPlayer != null && !mPlayer.isPlaying()){
+			mPlayer.start();
+		}*/
 	}
 
 	private MeshSceneNode cube;

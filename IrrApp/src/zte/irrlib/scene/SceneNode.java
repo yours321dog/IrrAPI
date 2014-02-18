@@ -150,23 +150,7 @@ public class SceneNode {
 	
 	public void remove(){
 		mScene.removeNode(this);
-	}
-	
-	public interface MaterialOwner {
-		
-		void setAmbientColor(Color4i color, int materialId);
-		void setDiffuseColor(Color4i color, int materialId);
-		void setEmissiveColor(Color4i color, int materialId);
-		void setSpecularColor(Color4i color, int materialId);
-		void setShininess(double para, int materialId);
-		
-		//return 0 if succeed
-		int setTexture(String path, int materialId);
-		int addTextureAnimator(String[] path, int timePerFrame, boolean loop);
-		
-		void setTouchable(boolean flag);
-	}
-	
+	}	
 	
 	SceneNode() {
 		this.Id = mScene.getNewId();
@@ -214,17 +198,4 @@ public class SceneNode {
 	private native void nativeAddDleeteAnimator(int ms, int Id);//added in 1.24
 
 	private native void nativeRemoveAllAnimator(int Id);
-	
-	//only available with mesh node below.
-	protected native void nativeSetTouchable(boolean flag, int Id);
-	protected native void nativeSetBBoxVisibility(boolean flag);
-	
-	protected native void nativeSetAmbientColor(int r, int g, int b, int a, int materialId, int Id);
-	protected native void nativeSetDiffuseColor(int r, int g, int b, int a, int materialId, int Id);
-	protected native void nativeSetEmissiveColor(int r, int g, int b, int a, int materialId, int Id);
-	protected native void nativeSetSpecularColor(int r, int g, int b, int a, int materialId, int Id);
-	protected native void nativeSetShininess(double shininess, int materialId, int Id);
-	
-	protected native int nativeSetTexture(String path, int materialId, int Id);
-	protected native int nativeAddTextureAnimator(String[] path, int timePerFrame, boolean loop, int Id);
 }
