@@ -390,24 +390,13 @@ extern "C"
 	{	
 		if (_extTex)
 		{
-			LOGW("return");
 			return getOpenGLESTextureID(_extTex);
 		}
 		else
 		{
-			LOGW("return2");
 			_extTex = driver->addTexture(_extPrefix, 0);
-			LOGW("return3");
 			return getOpenGLESTextureID(_extTex);
 		}
-	}
-	
-	void Java_zte_irrlib_scene_Scene_nativeSetMediaTexture(
-		JNIEnv *env, jobject defaultObj, jint mId, jint id)
-	{
-		ISceneNode* node = smgr->getSceneNodeFromId(id);
-		if (!node) return;
-		node->setMaterialTexture(mId, _extTex);
 	}
 }
 	

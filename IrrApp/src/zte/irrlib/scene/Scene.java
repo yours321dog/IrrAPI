@@ -1,5 +1,6 @@
 package zte.irrlib.scene;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import zte.irrapp.WLog;
@@ -10,8 +11,11 @@ import zte.irrlib.core.Vector2d;
 import zte.irrlib.core.Vector2i;
 import zte.irrlib.core.Vector3d;
 import android.media.MediaPlayer;
+import android.util.Log;
 
 public class Scene {
+	
+	public static final String TAG = "Scene";
 		
 	public void setClearColor(Color4i color){
 		nativeSetClearColor(color.r(), color.g(), color.b(), color.a());
@@ -187,19 +191,11 @@ public class Scene {
 		return node;
 	}
 	
-	public TextureMediaPlayer getMediaPlayer(){
-		
+	public TexMediaPlayer getMediaPlayer(){
 		if (mMediaPlayer == null){
-			mMediaPlayer = new TextureMediaPlayer();
-			mMediaPlayer.setTexId(nativeGetMediaTextureId());
-			mMediaPlayer.setDataSource("/storage/extSdCard/irrmedia/media.ts");
+			mMediaPlayer = new TexMediaPlayer(nativeGetMediaTextureId());
 		}
-
 		return mMediaPlayer;
-	}
-	
-	public void setMediaTexture(MeshSceneNode node, int materialId){
-		nativeSetMediaTexture(materialId, getId(node));
 	}
 
 	public void removeNode(SceneNode node){
@@ -227,6 +223,10 @@ public class Scene {
 	
 	public void javaClear(){
 		mNodeList.clear();
+		if (mMediaPlayer != null){
+			mMediaPlayer.release();
+			mMediaPlayer = null;
+		}
 		_NewId = 0;
 	}
 	
@@ -280,7 +280,7 @@ public class Scene {
 	private ArrayList<SceneNode> mNodeList;
 	private int mWidth, mHeight;
 	private boolean mEnableLighting = true;
-	private TextureMediaPlayer mMediaPlayer;
+	private TexMediaPlayer mMediaPlayer;
 	
 	private Scene(Engine engine){
 		mEngine = engine;
@@ -351,5 +351,4 @@ public class Scene {
 	private native void nativeClear();
 	
 	private native int nativeGetMediaTextureId();
-	private native void nativeSetMediaTexture(int materialId, int id);
 }

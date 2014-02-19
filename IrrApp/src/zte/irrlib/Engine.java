@@ -15,7 +15,7 @@ import android.util.Log;
 
 //向上负责与视图类的通信，向下负责管理引擎的java和native层
 public class Engine{
-	public static final String LogTag = "IrrEngine";
+	public static final String TAG = "IrrEngine";
 	
 	public static Engine getInstance(){
 		if (mUniInstance == null){
@@ -60,7 +60,7 @@ public class Engine{
 			return true;
 		}
 		else {
-			Log.w(LogTag, "event queue is full.");
+			Log.w(TAG, "event queue is full.");
 			return false;
 		}
 	}
@@ -100,7 +100,7 @@ public class Engine{
 	public synchronized void onDestroy(){
 		if (mIsInit) javaClear();
 		if (nativeIsInit()) nativeClear();
-		getScene().getMediaPlayer().release();
+		Log.d(TAG, "OnDestroy");
 	}
 	
 	public synchronized void onSurfaceCreated(){
@@ -114,7 +114,9 @@ public class Engine{
 			nativeInit(mRenderType);
 			JavaInit();
 			mRenderer.onCreate(this);
+			Log.d(TAG, "OnSurfaceCreated if");
 		}
+		Log.d(TAG, "OnSurfaceCreated");
 	}
 	
 	public void onSurfaceChanged(int width, int height){
@@ -127,10 +129,6 @@ public class Engine{
 		nativeBeginScene();
 		mRenderer.onDrawFrame(this);
 		nativeEndScene();
-	}
-	
-	public void startMediaPlayer(){
-		getScene().getMediaPlayer().start();
 	}
 	
 	private int JavaInit(){

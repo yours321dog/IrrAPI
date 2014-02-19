@@ -129,10 +129,9 @@ extern "C"
 			
 		if(!node) 
 			return -1;
-		
+			
 		ITexture *tex = driver->addTexture(name, image, 0);
-		node->getMaterial(materialID).setTexture(0, tex);
-		
+		node->setMaterialTexture(0, tex);
 		env->ReleaseStringUTFChars(jname,name);
 		return 0;
 	}
@@ -161,5 +160,15 @@ extern "C"
 			smgr->createTextureAnimator(texArr, timePerFrame, loop);
 		node->addAnimator(texAni);
 		return 0;
+	}
+	
+	
+	
+	void Java_zte_irrlib_scene_MeshSceneNode_nativeSetMediaTexture(
+		JNIEnv *env, jobject defaultObj, jint mId, jint id)
+	{
+		ISceneNode* node = smgr->getSceneNodeFromId(id);
+		if (!node) return;
+		node->setMaterialTexture(mId, _extTex);
 	}
 }

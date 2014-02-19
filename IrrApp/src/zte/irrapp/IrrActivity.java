@@ -1,16 +1,18 @@
 
 package zte.irrapp;
 
+import zte.irrlib.Engine;
 import zte.irrlib.IrrlichtView;
-import zte.irrlib.scene.TextureMediaPlayer;
 import zte.test.irrapp.R;
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 public class IrrActivity extends Activity {
 	IrrlichtView mDemo;
+	DemoRenderer mRenderer;
 	Button button;
 	protected String TAG = "IrrActivity";
 
@@ -20,15 +22,17 @@ public class IrrActivity extends Activity {
 		setContentView(R.layout.activity_irr);
 		mDemo = (IrrlichtView)findViewById(R.id.irrview);
 		mDemo.setRecommendEGLConfigChooser(8);
-		mDemo.setEngineRenderer(new DemoRenderer());
+		mRenderer = new DemoRenderer();
+		mDemo.setEngineRenderer(mRenderer);
 		
 		button = (Button)findViewById(R.id.button_start);
 		button.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View view) {
-				mDemo.startMediaPlayer();
+				mRenderer.startMediaPlayer();
 			}
 		});
+		Log.d(TAG, "Activity onCreate.");
 	}
 	
 	@Override
@@ -36,6 +40,7 @@ public class IrrActivity extends Activity {
 		super.onResume();
 		if (mDemo != null){
 			mDemo.onResume();
+			Log.d(TAG, "Activity onResume.");
 		}
 	}
 	
@@ -45,14 +50,12 @@ public class IrrActivity extends Activity {
 			mDemo.onPause();
 		}
 		super.onPause();
+		Log.d(TAG, "Activity onPause.");
 	}
 	
-	/*@Override
+	@Override
 	protected void onDestroy(){
-		if (mDemo != null){
-			mDemo.onDestroy();
-		}
-		WLog.i("onDestroy");
 		super.onDestroy();
-	}*/
+		Log.d(TAG, "Activity onDestroy");
+	}
 }

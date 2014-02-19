@@ -506,14 +506,12 @@ video::ITexture* CNullDriver::findTexture(const io::path& filename)
 	return 0;
 }
 
-
 //! Creates a texture from a loaded IImage.
 //! If name has a prefix of _extPrefix, it is an external texture.
 ITexture* CNullDriver::addTexture(const io::path& name, IImage* image, void* mipmapData)
 {
 	if ( 0 == name.size() || (!image && (name.subString(0, 10) != _extPrefix)))
 		return 0;
-
 	ITexture* t = createDeviceDependentTexture(image, name, mipmapData);
 	if (t)
 	{

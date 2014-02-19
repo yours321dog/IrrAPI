@@ -44,6 +44,10 @@ public class MeshSceneNode extends SceneNode{
 		return nativeSetBitmapTexture(bitmap.toString(), bitmap, materialId, getId());
 	}
 	
+	public void setMediaTexture(int materialId){
+		nativeSetMediaTexture(materialId, getId());
+	}
+	
 	public int addTextureAnimator(String[] path, int timePerFrame, boolean loop) {
 		return nativeAddTextureAnimator(path, timePerFrame, loop, getId());
 	}
@@ -69,4 +73,5 @@ public class MeshSceneNode extends SceneNode{
 	protected native int nativeSetTexture(String path, int materialId, int Id);
 	protected native int nativeAddTextureAnimator(String[] path, int timePerFrame, boolean loop, int Id);
 	private native int nativeSetBitmapTexture(String name, Bitmap bitmap, int materialId, int id);
+	private native void nativeSetMediaTexture(int materialId, int id);
 }

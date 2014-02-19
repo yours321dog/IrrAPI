@@ -434,7 +434,6 @@ namespace scene
 		{
 			if (textureLayer >= video::MATERIAL_MAX_TEXTURES)
 			{
-				__android_log_print(ANDROID_LOG_INFO, "Irrlicht", "small");
 				return;
 			}
 

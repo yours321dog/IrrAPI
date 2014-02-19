@@ -12,7 +12,7 @@
 #include "os.h"
 #include "CImage.h"
 #include "CColorConverter.h"
-
+#include "android-global.h"
 #include "irrString.h"
 
 namespace irr
@@ -34,19 +34,21 @@ COGLES1Texture::COGLES1Texture(IImage* origImage, const io::path& name, COGLES1D
 	#ifdef _DEBUG
 	setDebugName("COGLES1Texture");
 	#endif
-
+	
 	HasMipMaps = Driver->getTextureCreationFlag(ETCF_CREATE_MIP_MAPS);
 	getImageValues(origImage);
-
+	
 	glGenTextures(1, &TextureName);
-
+	
 	Image = new CImage(ColorFormat, TextureSize);
 	if (ImageSize==TextureSize)
 		origImage->copyTo(Image);
 	else
 		// scale texture
 		origImage->copyToScaling(Image);
+		
 	uploadTexture(true, mipmapData);
+	
 	if (!KeepImage)
 	{
 		Image->drop();
@@ -165,7 +167,6 @@ void COGLES1Texture::uploadTexture(bool newTexture, void* mipmapData, u32 level)
 		os::Printer::log("No image for OGLES1 texture to upload", ELL_ERROR);
 		return;
 	}
-	os::Printer::log("update", ELL_ERROR);
 	GLenum oldInternalFormat = InternalFormat;
 	void(*convert)(const void*, s32, void*)=0;
 	switch (Image->getColorFormat())
@@ -191,14 +192,12 @@ void COGLES1Texture::uploadTexture(bool newTexture, void* mipmapData, u32 level)
 			PixelType=GL_UNSIGNED_BYTE;
 			if (!Driver->queryOpenGLFeature(COGLES1ExtensionHandler::IRR_IMG_texture_format_BGRA8888) && !Driver->queryOpenGLFeature(COGLES1ExtensionHandler::IRR_EXT_texture_format_BGRA8888))
 			{
-				os::Printer::log("debug if1", ELL_ERROR);
 				convert=CColorConverter::convert_A8R8G8B8toA8B8G8R8;
 				InternalFormat=GL_RGBA;
 				PixelFormat=GL_RGBA;
 			}
 			else
 			{
-				os::Printer::log("debug else1", ELL_ERROR);
 				InternalFormat=GL_BGRA;
 				PixelFormat=GL_BGRA;
 				
