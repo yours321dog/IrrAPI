@@ -13,7 +13,6 @@ using namespace gui;
 IrrlichtDevice *device = 0;
 IVideoDriver* driver = 0;
 ISceneManager* smgr = 0;
-ISceneCollisionManager *collMgr = 0;
 
 int gWindowWidth = 640;
 int gWindowHeight = 480;
@@ -22,7 +21,76 @@ SColor backColor = SColor(255,180,180,255);
 
 bool _isInit = false;
 char _extPrefix[] = "<external>";
+char _builtInFontPath[] = "/storage/sdcard0/irrmedia/bigfont.png";
 ITexture *_extTex = 0;
+
+static jclass cls_color4i;
+static jfieldID id_red, id_green, id_blue, id_alpha;
+
+static jclass cls_color3i;
+static jfieldID id_red3, id_green3, id_blue3;
+
+static jclass cls_rect4i;
+static jfieldID id_left, id_top, id_right, id_bottom;
+
+static jclass cls_vector3d;
+static jfieldID id_vx, id_vy, id_vz;
+
+SColorf createSColorfFromColor3i(JNIEnv *env, jobject color)
+{
+	return SColorf(1.0, env->GetIntField(color, id_red)/255.0, 
+			env->GetIntField(color, id_green)/255.0, env->GetIntField(color, id_blue)/255.0);
+}
+
+SColor createSColorFromColor3i(JNIEnv *env, jobject color)
+{
+	return SColor(0xff, env->GetIntField(color, id_red), 
+			env->GetIntField(color, id_green), env->GetIntField(color, id_blue));
+}
+
+SColor createSColorFromColor4i(JNIEnv *env, jobject color)
+{
+	return SColor(env->GetIntField(color, id_alpha), env->GetIntField(color, id_red), 
+			env->GetIntField(color, id_green), env->GetIntField(color, id_blue));
+}
+
+recti createrectiFromRect4i(JNIEnv *env, jobject rec)
+{
+	return recti(env->GetIntField(rec, id_left), env->GetIntField(rec, id_top),
+			env->GetIntField(rec, id_right), env->GetIntField(rec, id_bottom));
+}
+
+vector3df createvector3dfFromVector3d(JNIEnv *env, jobject vec)
+{
+	return vector3df(env->GetIntField(vec, id_vx), env->GetIntField(vec, id_vy),
+			env->GetIntField(vec, id_vz));
+}
+
+void initJNIInfo(JNIEnv *env, jobject vector, jobject color4, jobject color3, jobject rect)
+{
+	cls_vector3d = env->GetObjectClass(vector);
+	cls_color4i = env->GetObjectClass(color4);
+	cls_color3i = env->GetObjectClass(color3);
+	cls_rect4i = env->GetObjectClass(rect);
+	
+	id_vx = env->GetFieldID(cls_vector3d, "x", "D");
+	id_vy = env->GetFieldID(cls_vector3d, "y", "D");
+	id_vz = env->GetFieldID(cls_vector3d, "z", "D");
+	
+	id_red = env->GetFieldID(cls_color4i, "red", "I");
+	id_green = env->GetFieldID(cls_color4i, "green", "I");
+	id_blue = env->GetFieldID(cls_color4i, "blue", "I");
+	id_alpha = env->GetFieldID(cls_color4i, "alpha", "I");
+	
+	id_red3 = env->GetFieldID(cls_color3i, "red", "I");
+	id_green3 = env->GetFieldID(cls_color3i, "green", "I");
+	id_blue3 = env->GetFieldID(cls_color3i, "blue", "I");
+	
+	id_left = env->GetFieldID(cls_rect4i, "left", "I");
+	id_top = env->GetFieldID(cls_rect4i, "top", "I");
+	id_right = env->GetFieldID(cls_rect4i, "right", "I");
+	id_bottom = env->GetFieldID(cls_rect4i, "bottom", "I");
+}
 
 long _getTime()
 {

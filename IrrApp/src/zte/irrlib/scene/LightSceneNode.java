@@ -6,6 +6,7 @@ public class LightSceneNode extends SceneNode {
 	LightSceneNode(){
 		super();
 		mNodeType = TYPE_LIGHT;
+		LightData = new SLight();
 	}
 	
 	public void UpdateLightData(){
@@ -18,5 +19,5 @@ public class LightSceneNode extends SceneNode {
 	
 	public SLight LightData;
 	
-	private native void nativeSendLightData(SLight data, int id);
+	private native int nativeSendLightData(SLight data, int id);
 }

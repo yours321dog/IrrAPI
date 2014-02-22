@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <irrlicht.h>
 #include "android-global.h"
+#include <string.h>
 
 #ifdef LOG_TAG
 #undef LOG_TAG
@@ -11,8 +12,11 @@
 extern "C"
 {
 	int Java_zte_irrlib_Engine_nativeInit(
-		JNIEnv *env, jobject defaultObj, int type)
+		JNIEnv *env, jobject defaultObj, int type,
+		jobject vector, jobject color4, jobject color3, jobject rect)
 	{
+		initJNIInfo(env, vector, color4, color3, rect);
+		
 		video::E_DRIVER_TYPE videoType =  video::EDT_NULL;
 		if (type == 0x00000001) videoType = video::EDT_OGLES1;
 		else if (type == 0x00000004) videoType = video::EDT_OGLES2;
@@ -25,7 +29,6 @@ extern "C"
 			device = 0;
 			driver = 0;
 			smgr = 0;
-			collMgr = 0;
 		}
 		
 		device = createDevice( videoType, 
@@ -49,10 +52,18 @@ extern "C"
 			return -3;
 		}
 		
-		smgr->setAmbientLight(video::SColor(0xff,0x90,0x90,0x30));
-		LOGI("Engine(without GUI) is ready. width: %d, height: %d", gWindowWidth, gWindowHeight);
+		smgr->setAmbientLight(video::SColor(0xff,0x30,0x30,0x30));
+		LOGI("Engine is ready. width: %d, height: %d", gWindowWidth, gWindowHeight);
 		_isInit = true;
 		return 0;
+	}
+	
+	void Java_zte_irrlib_Engine_nativeSetFontPath(
+		JNIEnv *env, jobject defaultObj, jstring path)
+	{
+		const char* text = env->GetStringUTFChars(path, 0);
+		strcpy(_builtInFontPath, text);
+		env->ReleaseStringUTFChars(path, text);
 	}
 	
 	bool Java_zte_irrlib_Engine_nativeIsInit(

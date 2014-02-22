@@ -14,8 +14,9 @@ extern "C"
 		JNIEnv *env, jobject defaultObj, jint parent, jint id)
 	{
 		//LOGD("PARENT %d", id);
-		ISceneNode *node = smgr->getSceneNodeFromId(id),
-			*parentNode = NULL;
+		ISceneNode *node = smgr->getSceneNodeFromId(id);
+		ISceneNode *parentNode = NULL;
+		
 		if (!node)
 		{
 			WARN_NODE_NOT_FOUND(id, SetParent);
@@ -32,7 +33,7 @@ extern "C"
 			if (!parentNode)
 			{
 				WARN_PARENT_NOT_FOUND(id, SetParent);
-				return -1;
+				return -2;
 			}
 			node->setParent(parentNode);
 		}
@@ -95,61 +96,86 @@ extern "C"
 		return 0;
 	}
 	
-	void Java_zte_irrlib_scene_SceneNode_nativeAddRotationAnimator(
-		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z, jint id)
+	int Java_zte_irrlib_scene_SceneNode_nativeAddRotationAnimator(
+		JNIEnv*  env, jobject defaultObj, jdouble x, jdouble y, jdouble z,
+		jint id)
 	{
-		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
-		scene::ISceneNodeAnimator* anim = 0;
-		anim = smgr->createRotationAnimator (core::vector3df(x,y,z));
+		ISceneNode* node = smgr->getSceneNodeFromId(id);
+		if (!node) 
+		{
+			WARN_NODE_NOT_FOUND(id, AddRotationAnimator);
+			return -1;
+		}
+		ISceneNodeAnimator* anim = smgr->createRotationAnimator(vector3df(x,y,z));
 		node->addAnimator(anim);
 		anim->drop();
+		return 0;
 	}
 	
-	void Java_zte_irrlib_scene_SceneNode_nativeAddFlyCircleAnimator(
+	int Java_zte_irrlib_scene_SceneNode_nativeAddFlyCircleAnimator(
 		JNIEnv*  env, jobject defaultObj, jdouble cx, jdouble cy, jdouble cz,
-		jdouble radius, jdouble speed, jdouble ax, jdouble ay, jdouble az, jint id)
+		jdouble radius, jdouble speed, jdouble ax, jdouble ay, jdouble az, 
+		jdouble startPosition, jdouble radiusEllipsoid, jint id)
 	{
-		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
+		ISceneNode* node = smgr->getSceneNodeFromId(id);
+		if (!node) 
+		{
+			WARN_NODE_NOT_FOUND(id, AddFlyCircleAnimator);
+			return -1;
+		}		
 		
-		core::vector3df center = core::vector3df(cx,cy,cz);
-		core::vector3df dir = core::vector3df(ax, ay, az);
-
-		scene::ISceneNodeAnimator* anim = 0;
-		anim = smgr->createFlyCircleAnimator (center,radius,speed,dir);
+		ISceneNodeAnimator* anim = 
+			smgr->createFlyCircleAnimator(vector3df(cx,cy,cz),radius,speed,vector3df(ax, ay, az), startPosition, radiusEllipsoid);
 		node->addAnimator(anim);
 		anim->drop();
+		return 0;
 	}
 	
-	void Java_zte_irrlib_scene_SceneNode_nativeAddFlyStraightAnimator(
+	int Java_zte_irrlib_scene_SceneNode_nativeAddFlyStraightAnimator(
 		JNIEnv*  env, jobject defaultObj, jdouble sx, jdouble sy, jdouble sz,
-		jdouble dx, jdouble dy, jdouble dz, jdouble time, jint id)
+		jdouble dx, jdouble dy, jdouble dz, jdouble time, 
+		jboolean loop, jboolean pingpong, jint id)
 	{
-		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
+		ISceneNode* node = smgr->getSceneNodeFromId(id);
+		if (!node) 
+		{
+			WARN_NODE_NOT_FOUND(id, AddFlyStraightAnimator);
+			return -1;
+		}			
+		vector3df start(sx,sy,sz);
+		vector3df end(dx, dy, dz);
 		
-		core::vector3df start = core::vector3df(sx,sy,sz);
-		core::vector3df end = core::vector3df(dx, dy, dz);
-		
-		scene::ISceneNodeAnimator* anim = 0;
-		anim = smgr->createFlyStraightAnimator (start,end,time);
+		ISceneNodeAnimator* anim = smgr->createFlyStraightAnimator (start, end, time, loop, pingpong);
 		node->addAnimator(anim);
 		anim->drop();
+		return 0;
 	}
 	
-	void Java_zte_irrlib_scene_SceneNode_nativeAddDeleteAnimator(
+	int Java_zte_irrlib_scene_SceneNode_nativeAddDeleteAnimator(
 		JNIEnv *env, jobject defaultObj, jint ms, jint id)
 	{
-		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
-		
-		scene::ISceneNodeAnimator* anim = 0;
-		anim = smgr->createDeleteAnimator(ms);
+		ISceneNode* node = smgr->getSceneNodeFromId(id);
+		if (!node) 
+		{
+			WARN_NODE_NOT_FOUND(id, AddDeleteAnimator);
+			return -1;
+		}				
+		ISceneNodeAnimator* anim = smgr->createDeleteAnimator(ms);
 		node->addAnimator(anim);
 		anim->drop();
+		return 0;
 	}
 	
-	void Java_zte_irrlib_scene_SceneNode_nativeRemoveAllAnimator(
+	int Java_zte_irrlib_scene_SceneNode_nativeRemoveAllAnimator(
 		JNIEnv *env, jobject defaultObj, jint id)
 	{
-		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
+		ISceneNode* node = smgr->getSceneNodeFromId(id);
+		if (!node) 
+		{
+			WARN_NODE_NOT_FOUND(id, RemoveAllAnimator);
+			return -1;
+		}				
 		node->removeAnimators();
+		return 0;
 	}
 }

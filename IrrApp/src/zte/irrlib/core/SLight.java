@@ -24,6 +24,6 @@ public class SLight {
 	public double InnerCone = 0.0;
 	public double Falloff = 2.0;
 	
-	public Vector3d Direction = new Vector3d();
+	public Vector3d Direction = new Vector3d(0, 0, 1.0);
 	public double Radius = 100.0;
 }

@@ -2,6 +2,12 @@
 #include <irrlicht.h>
 #include "android-global.h"
 
+#ifdef LOG_TAG
+#undef LOG_TAG
+#endif
+
+#define LOG_TAG "NativeLight"
+
 /* class SLight in SLight.java
 public class SLight {
 	
@@ -16,14 +22,14 @@ public class SLight {
 	public Color3i SpecularColor = new Color3i(0xff, 0xff, 0xff);
 	
 	//Attenuation factors (constant, linear, quadratic)
-	public Vector3d Attenuation = new Vector3d(0, 0, 1.0);
+	public Vector3d Attenuation = new Vector3d(0, 0, 1);
 	
 	//only available for spot light
 	public double OuterCone = 45.0;
 	public double InnerCone = 0.0;
 	public double Falloff = 2.0;
 	
-	public Vector3d Direction = new Vector3d();
+	public Vector3d Direction = new Vector3d(0, 0, 1);
 	public double Radius = 100.0;
 }
 */
@@ -33,29 +39,45 @@ public class SLight {
 
 extern "C"
 {
-	void Java_zte_irrlib_scene_LightSceneNode_nativeSendLightData(
+	int Java_zte_irrlib_scene_LightSceneNode_nativeSendLightData(
 		JNIEnv *env, jobject defaultObj, jobject light_obj, jint id)
 	{
-		jclass light_cls = env->GetObjectClass(light_obj);
-		scene::ILightSceneNode *light = 
+		const int NUM = 12;
+		jclass cls_light = env->GetObjectClass(light_obj);
+
+		jfieldID id_field[NUM];
+		char **name = new char*[NUM];
+		char **type = new char*[NUM];
+		for (int i = 0; i < NUM; i++)
+		{
+			name[i] = new char[32];
+			type[i] = new char[32];
+		}
+		
+		strcpy(name[0], "Type"); strcpy(type[0], "I");
+		strcpy(name[1], "AmbientColor"); strcpy(type[1], "Lzte/irrlib/core/Color3i");
+		strcpy(name[2], "DiffuseColor"); strcpy(type[2], "Lzte/irrlib/core/Color3i");
+		strcpy(name[3], "SpecularColor"); strcpy(type[3], "Lzte/irrlib/core/Color3i");
+		strcpy(name[4], "Attenuation"); strcpy(type[4], "Lzte/irrlib/core/Vector3d");
+		strcpy(name[5], "OuterCone"); strcpy(type[5], "D");
+		strcpy(name[6], "InnerCone"); strcpy(type[6], "D");
+		strcpy(name[7], "Falloff"); strcpy(type[7], "D");
+		strcpy(name[8], "Direction"); strcpy(type[8], "Lzte/irrlib/core/Vector3d");
+		strcpy(name[9], "Radius"); strcpy(type[9], "D");
+		
+		for (int i = 0; i < NUM; i++)
+			id_field[i] =  env->GetFieldID(cls_light, name[i], type[i]);
+	
+		ILightSceneNode *light = 
 			(scene::ILightSceneNode *)smgr->getSceneNodeFromId(id);
+		
+		if (!light)
+		{
+			WARN_NODE_NOT_FOUND(id, SendLightData);
+			return -1;
+		}
 			
-		if(light_cls == NULL || !light)
-			return;
-		
-		jfieldID typeID = env->GetFieldID(light_cls,"Type","I");
-		jfieldID outerConeID = env->GetFieldID(light_cls,"OuterCone","D");
-		jfieldID innerConeID = env->GetFieldID(light_cls,"InnerCone","D");
-		jfieldID fallOffID = env->GetFieldID(light_cls,"Falloff","D");
-		jfieldID radiusID = env->GetFieldID(light_cls,"Radius","D");
-		
-		jint type = (jint)env->GetIntField(light_obj,typeID);
-		jdouble outerCone = (jdouble)env->GetDoubleField(light_obj,outerConeID);
-		jdouble innerCone = (jdouble)env->GetDoubleField(light_obj,innerConeID);
-		jdouble fallOff = (jdouble)env->GetDoubleField(light_obj,fallOffID);
-		jdouble radius = (jdouble)env->GetDoubleField(light_obj,radiusID);
-		
-		switch(type){
+		switch(env->GetIntField(light_obj, id_field[0])){
 			case POINT_LIGHT:
 				light->setLightType(video::ELT_POINT);
 				break;
@@ -65,14 +87,30 @@ extern "C"
 			case DIRECTIONAL_LIGHT:
 				light->setLightType(video::ELT_DIRECTIONAL);
 				break;
-			default:	
-				__android_log_print(ANDROID_LOG_INFO, "FANG", "LightSceneNode: light type error.");
+			default:
+				LOGE("Light type error!");
+				return -5;
 				break;
 		}
-		light->getLightData().OuterCone = (float)outerCone;
-		light->getLightData().InnerCone = (float)innerCone;
-		light->getLightData().Falloff = (float)fallOff;
-		light->getLightData().Radius = (float)radius;
+		
+		SLight &lightData = light->getLightData();
+		
+		lightData.AmbientColor = createSColorfFromColor3i(env, env->GetObjectField(light_obj, id_field[1]));
+		lightData.DiffuseColor = createSColorfFromColor3i(env, env->GetObjectField(light_obj, id_field[2]));
+		lightData.SpecularColor = createSColorfFromColor3i(env, env->GetObjectField(light_obj, id_field[3]));
+		lightData.Attenuation = createvector3dfFromVector3d(env, env->GetObjectField(light_obj, id_field[4]));
+		lightData.OuterCone =  (f32)env->GetDoubleField(light_obj, id_field[5]);
+		lightData.InnerCone = (f32)env->GetDoubleField(light_obj, id_field[6]);
+		lightData.Falloff = (f32)env->GetDoubleField(light_obj, id_field[7]);
+		lightData.Direction = createvector3dfFromVector3d(env, env->GetObjectField(light_obj, id_field[8]));
+		lightData.Radius = (f32)env->GetDoubleField(light_obj, id_field[9]);
+			
+		for (int i = 0; i < NUM; i++)
+		{
+			delete [] name[i];
+			delete [] type[i];
+		}
+		delete name, type;
 	}
 }
 

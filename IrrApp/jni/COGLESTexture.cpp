@@ -12,7 +12,6 @@
 #include "os.h"
 #include "CImage.h"
 #include "CColorConverter.h"
-#include "android-global.h"
 #include "irrString.h"
 
 namespace irr
@@ -220,8 +219,8 @@ void COGLES1Texture::uploadTexture(bool newTexture, void* mipmapData, u32 level)
 		InternalFormat=oldInternalFormat;
 
 	Driver->setTexture(0, this);
-	if (Driver->testGLError())
-		os::Printer::log("Could not bind Texture", ELL_ERROR);
+	if (Driver->testGLError());
+	//	os::Printer::log("Could not bind Texture", ELL_ERROR);
 
 	if (!level && newTexture)
 	{

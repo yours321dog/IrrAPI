@@ -1,16 +1,13 @@
 package zte.irrlib;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 
-import zte.irrapp.WLog;
+import zte.irrlib.core.Color3i;
+import zte.irrlib.core.Color4i;
+import zte.irrlib.core.Rect4i;
 import zte.irrlib.core.Vector2i;
+import zte.irrlib.core.Vector3d;
 import zte.irrlib.scene.Scene;
-import android.content.res.AssetManager;
 import android.util.Log;
 
 //向上负责与视图类的通信，向下负责管理引擎的java和native层
@@ -25,11 +22,16 @@ public class Engine{
 	}
 	
 	public void setResourceDir(String path){
-		mResourcePath = path;
+		mScene.setResourceDir(path);
 	}
 	
 	public void setRenderer(Renderer renderer){
 		mRenderer = renderer;
+	}
+	
+	public void setFontPath(String path)
+	{
+		nativeSetFontPath(path);
 	}
 	
 	public void setRenderType(int type){
@@ -41,7 +43,7 @@ public class Engine{
 	}
 	
 	public String getResourceDir(){
-		return mResourcePath;
+		return mScene.getResourceDir();
 	}
 	
 	public Vector2i getRenderSize(){
@@ -74,29 +76,6 @@ public class Engine{
 		}
 	}
 	
-	public void copyAssetsToNative(AssetManager assetManager, boolean isMandatory) throws IOException{
-		if (!isMandatory){
-			File checkFile = new File(getResourceDir());
-			if (checkFile.exists() && checkFile.isDirectory()){
-				return;
-			}
-		}
-		String[] fileList = assetManager.list("");
-		for(String file:fileList){
-			InputStream input = assetManager.open(file);
-			OutputStream output =
-					new FileOutputStream(getResourceDir() + "/" + file);
-			byte[] buffer = new byte[4096];
-			int length;
-			while ((length = input.read(buffer)) > 0){
-				output.write(buffer, 0, length);
-			}
-			output.flush();
-			output.close();
-			input.close();
-		}
-	}
-	
 	public synchronized void onDestroy(){
 		if (mIsInit) javaClear();
 		if (nativeIsInit()) nativeClear();
@@ -111,7 +90,7 @@ public class Engine{
 			if (mIsInit) javaClear();
 			if (nativeIsInit()) nativeClear();
 			//re-initialize
-			nativeInit(mRenderType);
+			nativeInit(mRenderType, new Vector3d(), new Color4i(), new Color3i(), new Rect4i());
 			JavaInit();
 			mRenderer.onCreate(this);
 			Log.d(TAG, "OnSurfaceCreated if");
@@ -160,17 +139,15 @@ public class Engine{
 	private int mRenderType = EGL10Ext.EGL_OPENGL_ES1_BIT;
 	private ArrayList<Event> mEventQueue;
 	
-	private String mResourcePath;
 	private boolean mIsInit;
 	
-
-
-	private native int nativeInit(int rendertype);
+	private native int nativeInit(int rendertype, Vector3d vec, Color4i color4, Color3i color3, Rect4i rect);
+	private native void nativeSetFontPath(String path);
 	private native void nativeClear();
 	private native boolean nativeIsInit();
 	
 	private native void nativeResize(int w, int h);
-	//private native void nativeDrop();  ***  seems useless, and will cause error
+	
 	private native double nativeGetFPS();
 	native void nativeBeginScene();
 	native void nativeEndScene();

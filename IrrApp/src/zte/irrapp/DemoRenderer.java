@@ -3,31 +3,34 @@ package zte.irrapp;
 import zte.irrlib.Engine;
 import zte.irrlib.Engine.Renderer;
 import zte.irrlib.core.Color3i;
+import zte.irrlib.core.Color4i;
+import zte.irrlib.core.Vector2i;
 import zte.irrlib.core.Vector3d;
 import zte.irrlib.scene.LightSceneNode;
 import zte.irrlib.scene.MeshSceneNode;
 import zte.irrlib.scene.Scene;
 import zte.irrlib.scene.SceneNode;
 import zte.irrlib.scene.TexMediaPlayer;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 public class DemoRenderer implements Renderer {
 	
 	public static final String TAG = "DemoRenderer";
 
 	public void onDrawFrame(Engine engine) {
-		//mPlayer.update();
 		Scene scene = engine.getScene();
-		cube.setRotation(new Vector3d(1, 0.2, 0), SceneNode.RELATIVE_TRANSFORM);
+		
 		scene.drawAllNodes();
 		
-		count = (count+1)%100;
-		if (count == 0) WLog.i("fps: " + engine.getFPS());
+		
+		scene.drawText("fps: " + engine.getFPS(),
+				new Vector2i(0, 0),
+				new Color4i(0x90, 0x40, 0x90, 0xff));
 	}
 
-	public void onCreate(Engine engine) {		
+	public void onCreate(Engine engine) {
+		engine.setResourceDir("/storage/sdcard0/irrmedia/");
 		Scene scene = engine.getScene();
+		scene.enableLighting(false);
 		/*mPlayer = scene.getMediaPlayer();
 		
 		try {
@@ -45,15 +48,12 @@ public class DemoRenderer implements Renderer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}*/
-		
-		cube = scene.addCubeSceneNode(new Vector3d(0, 0, 0), 10, null);
-		cube.setPosition(new Vector3d(0,0,20));
-		//Bitmap bitmap = BitmapFactory.decodeFile("/storage/extSdCard/irrmedia/test2.jpg");
-		//cube.setTexture(bitmap, 0);
-		//cube.setTexture("/storage/extSdCard/irrmedia/test2.jpg", 0);
-		//cube.setMediaTexture(0);
-		
-		light = scene.addLightSceneNode(new Vector3d(30,30,-30), 100, new Color3i(0xff,0,0), null);
+		model = scene.addAnimateMeshSceneNode("settings.b3d", new Vector3d(0, 0, 10), null);
+		model.setRotation(new Vector3d(-90, 0, 0), SceneNode.TRANS_ABSOLUTE);
+		model.addRotationAnimator(new Vector3d(0, 0.5, 0), 0);
+		node = scene.addTextNode("new", new Vector3d(0, 0, 1000), 10, null);
+		node.setVisible(false);
+		// light = scene.addLightSceneNode(new Vector3d(0,0,-30), 20, new Color3i(0x7f,0x7f,0x7f), null);
 	}
 	
 	public void onResize(Engine engine, int width, int height) {
@@ -64,7 +64,8 @@ public class DemoRenderer implements Renderer {
 		mPlayer.start();
 	}
 
-	private MeshSceneNode cube;
+	private SceneNode empty, node;
+	private MeshSceneNode cube, model;
 	private LightSceneNode light;
 	private int count;
 	private TexMediaPlayer mPlayer;

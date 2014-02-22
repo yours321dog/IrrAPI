@@ -37,7 +37,7 @@ public class MeshSceneNode extends SceneNode{
 	}
 
 	public int setTexture(String path, int materialId) {
-		return nativeSetTexture(path, materialId, getId());
+		return nativeSetTexture(mScene.getFullPath(path), materialId, getId());
 	}
 	
 	public int setTexture(Bitmap bitmap, int materialId){

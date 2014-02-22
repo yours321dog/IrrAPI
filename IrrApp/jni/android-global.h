@@ -5,6 +5,7 @@
 #include <irrlicht.h>
 #include <android/log.h>
 #include <android/bitmap.h>
+#include <jni.h>
 
 using namespace irr;
 using namespace core;
@@ -14,8 +15,16 @@ using namespace io;
 using namespace gui;
 
 long _getTime();
-IImage* createImageFromBitmap(JNIEnv* env, jobject jbitmap);
 int getOpenGLESTextureID(const ITexture* tex);
+
+void initJNIInfo(JNIEnv *env, jobject vector, jobject color4, jobject color3, jobject rect);
+IImage* createImageFromBitmap(JNIEnv* env, jobject jbitmap);
+
+recti createrectiFromRect4i(JNIEnv *env, jobject rec);
+SColor createSColorFromColor4i(JNIEnv *env, jobject color);
+SColor createSColorFromColor3i(JNIEnv *env, jobject color);
+SColorf createSColorfFromColor3i(JNIEnv *env, jobject color);
+vector3df createvector3dfFromVector3d(JNIEnv *env, jobject vec);
 
 #define LOG_TAG "irrlicht engine"
 
@@ -40,7 +49,6 @@ int getOpenGLESTextureID(const ITexture* tex);
 extern IrrlichtDevice *device;
 extern IVideoDriver* driver;
 extern ISceneManager* smgr;
-extern ISceneCollisionManager *collMgr;
 
 extern int  gWindowWidth;
 extern int  gWindowHeight;
@@ -49,6 +57,7 @@ extern video::SColor backColor;
 
 extern bool _isInit;
 extern char _extPrefix[];
+extern char _builtInFontPath[];
 extern ITexture* _extTex;
 
 #endif // __ANDOIRD_GLOBAL_H_INCLUDED__

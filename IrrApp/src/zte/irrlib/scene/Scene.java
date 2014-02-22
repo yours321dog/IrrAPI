@@ -1,22 +1,33 @@
 package zte.irrlib.scene;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-import zte.irrapp.WLog;
 import zte.irrlib.Engine;
+import zte.irrlib.Utils;
 import zte.irrlib.core.Color3i;
 import zte.irrlib.core.Color4i;
+import zte.irrlib.core.Rect4i;
 import zte.irrlib.core.Vector2d;
 import zte.irrlib.core.Vector2i;
 import zte.irrlib.core.Vector3d;
-import android.media.MediaPlayer;
-import android.util.Log;
 
 public class Scene {
 	
 	public static final String TAG = "Scene";
-		
+	
+	public void enableLighting(boolean flag){
+		mEnableLighting = flag;
+	}
+
+	public void setResourceDir(String path){
+		mResourceDir = path;
+	}
+
+	public void setActiveCamera(CameraSceneNode camera){
+		mActiveCamera = camera;
+		nativeSetActiveCamera(getId(camera));
+	}
+
 	public void setClearColor(Color4i color){
 		nativeSetClearColor(color.r(), color.g(), color.b(), color.a());
 	}
@@ -25,24 +36,16 @@ public class Scene {
 		nativeSetAmbientLight(color.r(), color.g(), color.b(), color.a());
 	}
 	
-	public void setActiveCamera(CameraSceneNode camera){
-		if (camera != null){
-			mActiveCamera = camera;
-			nativeSetActiveCamera(camera.getId());
-		}
+	public String getResourceDir(){
+		return mResourceDir;
 	}
-	
-	public void enableLighting(boolean flag){
-		mEnableLighting = flag;
-	}
-	
+
 	public CameraSceneNode getActiveCamera(){
 		return mActiveCamera;
 	}
 		
 	public SceneNode getTouchedSceneNode(int x, int y, SceneNode root){
-		int nodeId = nativeGetTouchedSceneNode(x, y, getId(root));
-		return queryById(nodeId);
+		return queryById(nativeGetTouchedSceneNode(x, y, getId(root)));
 	}
 	
 	public Vector2i getRenderSize(){
@@ -50,11 +53,10 @@ public class Scene {
 	}
 	
 	public SceneNode queryById(int id){
-		if (id > 0){
-			for (SceneNode node:mNodeList){
-				if (node.getId() == id){
-					return node;
-				}
+		if (id <= 0) return null;
+		for (SceneNode node:mNodeList){
+			if (getId(node) == id){
+				return node;
 			}
 		}
 		return null;
@@ -67,20 +69,19 @@ public class Scene {
 		else return node.getId();
 	}
 	
-
-	
-	public void drawImage(String path, Vector2i leftUp, int w, int h, int transparent){
-		if (transparent < 0) transparent = 0;
-		else if (transparent > 255) transparent = 255;	
-		nativeDrawImage(mEngine.getResourceDir() + path, leftUp.x, leftUp.y, w, h, transparent);
+	//to be extend, can be transparent one, can be only part of it.
+	public void drawImage(String path, Vector2i leftUp, Vector2i size){
+		nativeDrawImage(getFullPath(path), leftUp.x, leftUp.y, size.x, size.y);
 	}
 	
-	public void drawRectangle(Vector2i leftUp, int w, int h, Color4i color){
-		nativeDrawRectangle(leftUp.x, leftUp.y, w, h, color.r(), color.g(), color.b(), color.a());
+	//to be extend, can be multi-color one
+	public void drawRectangle(Vector2i leftUp, Vector2i size, Color4i color){
+		nativeDrawRectangle(leftUp.x, leftUp.y, size.x, size.y, color.r(), color.g(), color.b(), color.a());
 	}
 	
-	public void drawText(String text, Vector2i leftUp, float size, Color4i color){
-		nativeDrawText(text, leftUp.x, leftUp.y, size, color.r(), color.g(), color.b(), color.a());
+	//It is necessary to supply font choice?
+	public void drawText(String text, Vector2i leftUp, Color4i color){
+		nativeDrawText(text, leftUp.x, leftUp.y, color.r(), color.g(), color.b(), color.a());
 	}
 	
 	public void drawAllNodes(){
@@ -109,8 +110,8 @@ public class Scene {
 	
 	public MeshSceneNode addMeshSceneNode(String path, Vector3d pos, SceneNode parent){
 		MeshSceneNode node = new MeshSceneNode();
-		if (nativeAddMeshSceneNode(mEngine.getResourceDir() + path, 
-				pos.x, pos.y, pos.z, getId(node), getId(parent), mEnableLighting) != 0)
+		if (nativeAddMeshSceneNode(getFullPath(path), pos.x, pos.y, pos.z,
+				getId(node), getId(parent), mEnableLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, parent);
@@ -119,8 +120,8 @@ public class Scene {
 	
 	public SceneNode addTextNode(String text, Vector3d pos, double size, SceneNode parent){
 		SceneNode node = new SceneNode();
-		if (nativeAddTextNode(text, pos.x, pos.y, pos.z,
-				size, getId(node), getId(parent), mEnableLighting) != 0)
+		if (nativeAddTextNode(text, pos.x, pos.y, pos.z, size, 
+				getId(node), getId(parent), mEnableLighting) != 0)
 			return null;
 		
 		node.javaLoadDataAndInit(pos, parent);
@@ -173,7 +174,7 @@ public class Scene {
 	
 	public AnimateMeshSceneNode addAnimateMeshSceneNode(String path, Vector3d pos, SceneNode parent){
 		AnimateMeshSceneNode node = new AnimateMeshSceneNode();
-		if (nativeAddAnimateMeshSceneNode(path, pos.x, pos.y, pos.z,
+		if (nativeAddAnimateMeshSceneNode(getFullPath(path), pos.x, pos.y, pos.z,
 				getId(node), getId(parent), mEnableLighting) != 0){
 			return null;
 		}
@@ -193,7 +194,7 @@ public class Scene {
 	
 	public TexMediaPlayer getMediaPlayer(){
 		if (mMediaPlayer == null){
-			mMediaPlayer = new TexMediaPlayer(nativeGetMediaTextureId());
+			mMediaPlayer = new TexMediaPlayer(this, nativeGetMediaTextureId());
 		}
 		return mMediaPlayer;
 	}
@@ -233,20 +234,16 @@ public class Scene {
 	//this method will *NOT* automatically register node in native engine
 	//thus, it should not be used alone
 	void registerNode(SceneNode node){
-		if (node != null){
-			mNodeList.add(node);
-		}
+		mNodeList.add(node);
 	}
 	
 	//this method will *NOT* automatically unregister node in native engine
 	//thus, it should not be used alone
 	boolean unregisterNode(SceneNode node){
-		if (node != null){
-			for (SceneNode itr:mNodeList){
-				if (getId(itr) == getId(node)){
-					mNodeList.remove(itr);
-					return true;
-				}
+		for (SceneNode itr:mNodeList){
+			if (getId(itr) == getId(node)){
+				mNodeList.remove(itr);
+				return true;
 			}
 		}
 		return false;
@@ -259,9 +256,9 @@ public class Scene {
 	public static Scene getInstance(Engine engine){
 		if (_UniInstance == null){
 			_UniInstance = new Scene(engine);
+		}else {
+			_UniInstance.mEngine = engine;
 		}
-		else _UniInstance.mEngine = engine;
-		
 		return _UniInstance;
 	}
 	
@@ -272,6 +269,14 @@ public class Scene {
 		return _UniInstance;
 	}
 	
+	protected String getFullPath(String path){
+		if (Utils.isAbsolutePath(path)){
+			return path; 
+		} else {
+			return getResourceDir() + path;
+		}
+	}
+	
 	private static Scene _UniInstance;
 	private static int _NewId;
 	
@@ -280,6 +285,7 @@ public class Scene {
 	private ArrayList<SceneNode> mNodeList;
 	private int mWidth, mHeight;
 	private boolean mEnableLighting = true;
+	private String mResourceDir;
 	private TexMediaPlayer mMediaPlayer;
 	
 	private Scene(Engine engine){
@@ -289,22 +295,23 @@ public class Scene {
 	
 	private native void nativeSetClearColor(int r, int g, int b, int a);
     private native void nativeSetAmbientLight(int r, int g, int b, int a);
-    private native void nativeSetActiveCamera(int id);    
-
+    private native void nativeSetActiveCamera(int id);
     private native int nativeGetTouchedSceneNode(int x, int y, int root);
     
     //native draw API
 	private native void nativeDrawImage(
 			String path, int left, int up, 
-			int width, int height, int transparent);
+			int width, int height);
 	
 	private native void nativeDrawRectangle(
 			int left, int up, int width, int height, 
 			int r, int g, int b,int a);
 	
+	private native void nativeDrawRectangleChrome(Rect4i rect, Color4i[]color) ;
+	
 	private native void nativeDrawText(
 			String text, int left, int up,
-			float size, int r, int g, int b, int a);
+			int r, int g, int b, int a);
 	
     private native void nativeSmgrDrawAll();
 

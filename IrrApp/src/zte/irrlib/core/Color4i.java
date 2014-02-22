@@ -3,6 +3,11 @@ package zte.irrlib.core;
 public class Color4i {
 	private int red, green, blue, alpha;
 	
+	//default white
+	public Color4i(){ 
+		red = green = blue = alpha = 0xff;
+	}
+	
 	public Color4i(int v1, int v2, int v3, int v4){
 		red = v1; green = v2; blue = v3; alpha = v4;
 	}

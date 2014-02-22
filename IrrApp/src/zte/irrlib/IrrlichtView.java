@@ -72,6 +72,8 @@ public class IrrlichtView extends GLSurfaceView {
 			public void onSurfaceChanged(GL10 unused, int width, int height) {mEngine.onSurfaceChanged(width, height);}
 			public void onDrawFrame(GL10 unused) {mEngine.onDrawFrame();}
 		});
+		
+		setPreserveEGLContextOnPause(true);
 	}
 	
 	@Override

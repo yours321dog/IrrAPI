@@ -1,19 +1,8 @@
 package zte.irrlib.scene;
 
-import zte.irrapp.WLog;
-import zte.irrlib.core.Color4i;
 import zte.irrlib.core.Vector3d;
 
 public class SceneNode {
-	
-	/*public static final SceneNode createNullNode(){
-		SceneNode node = new SceneNode();
-		node.Id = 0;
-		node.mNodeType = TYPE_NULL;
-		return node;
-	}*/
-	
-	//public static final SceneNode NULL_SCENE_NODE;
 	
 	public static final int TYPE_NULL = 0x00000000;
 	public static final int TYPE_COMMON = 0x00000001;
@@ -25,24 +14,16 @@ public class SceneNode {
 	public static final int TYPE_CAMERA = 0x00000007;
 	public static final int TYPE_PARTICLE_SYSTEM = 0x00000008;
 	
-	public static final int ABSOLUTE_TRANSFORM = 0;
-	public static final int RELATIVE_TRANSFORM = 1;
+	public static final int TRANS_ABSOLUTE = 0;
+	public static final int TRANS_RELATIVE = 1;
 	
 	public static final int FLAG_MATERIAL_OWNER = 0x00001000;
 	
-	public static boolean setScene(Scene scene){
-		if (scene == null) return false;
+	public static final void setScene(Scene scene){
 		mScene = scene;
-		return true;
 	}
 	
-	public class TransformationInfo{
-		public Vector3d Position;
-		public Vector3d Rotation;
-		public Vector3d Scale;
-	}
-	
-	public int getNodeType(){
+	public final int getNodeType(){
 		return mNodeType;
 	}
 
@@ -50,13 +31,6 @@ public class SceneNode {
 		mPosition[1].copy(mPosition[0]);
 		mRotation[1].copy(mRotation[0]);
 		mScale[1].copy(mScale[0]);
-	}
-	
-	public void javaLoadDataAndInit(Vector3d pos, SceneNode parent){
-		mPosition[0] = pos;
-		mParent = parent;
-		mark();
-		mScene.registerNode(this);
 	}
 	
 	public void setParent(SceneNode node){
@@ -68,48 +42,53 @@ public class SceneNode {
 		mIsVisible = isVisible;
 		nativeSetVisible(isVisible, getId());
 	}
-	
-	public void setRotation(Vector3d para, int mode){
-		if (mode == ABSOLUTE_TRANSFORM){
-			mRotation[0] = mRotation[1].plus(para);
+
+	public void setPosition(Vector3d para, int mode){
+		if (mode == TRANS_ABSOLUTE){
+			mPosition[0].copy(para);
 		}
-		else if (mode == RELATIVE_TRANSFORM){
-			mRotation[0] = mRotation[0].plus(para);
+		else if (mode == TRANS_RELATIVE){
+			mPosition[0] = mPosition[1].plus(para);
+		}
+		else return;
+		
+		nativeSetPosition(mPosition[0].x, mPosition[0].y, mPosition[0].z, getId());
+	}
+
+	public void setRotation(Vector3d para, int mode){
+		if (mode == TRANS_ABSOLUTE){
+			mRotation[0].copy(para);
+		}
+		else if (mode == TRANS_RELATIVE){
+			mRotation[0] = mRotation[1].plus(para);
 		}
 		else return;
 		
 		nativeSetRotation(mRotation[0].x, mRotation[0].y, mRotation[0].z, getId());
 	}
-	
-	public void setTranslation(Vector3d para, int mode){
-		if (mode == ABSOLUTE_TRANSFORM){
-			mPosition[0] = mPosition[1].plus(para);
-		}
-		else if (mode == RELATIVE_TRANSFORM){
-			mPosition[0] = mPosition[0].plus(para);
-		}
-		else return;
-		
-		nativeSetPosition(mPosition[0].x, mPosition[0].y, mPosition[0].z, getId());
-	}
+
 	public void setScale(Vector3d para, int mode){
-		if (mode == ABSOLUTE_TRANSFORM){
-			mScale[0] = mScale[1].plus(para);
+		if (mode == TRANS_ABSOLUTE){
+			mScale[0].copy(para);
 		}
-		else if (mode == RELATIVE_TRANSFORM){
-			mScale[0] = mScale[0].plus(para);
+		else if (mode == TRANS_RELATIVE){
+			mScale[0] = mScale[1].multi(para);
 		}
 		else return;
 		
 		nativeSetScale(mScale[0].x, mScale[0].y, mScale[0].z, getId());
 	}
-	public void setPosition(Vector3d pos){
-		mPosition[0] = pos;
-		nativeSetPosition(mPosition[0].x, mPosition[0].y, mPosition[0].z, getId());
+
+	public Vector3d getPosition(){
+		return new Vector3d(mPosition[0]);
 	}
 	
-	public Vector3d getPosition(){
-		return mPosition[0];
+	public Vector3d getRotation(){
+		return new Vector3d(mRotation[0]); 
+	}
+	
+	public Vector3d getScale(){
+		return new Vector3d(mScale[0]); 
 	}
 	
 	public TransformationInfo getTransformationInfo(){
@@ -127,20 +106,24 @@ public class SceneNode {
 		mScale[0].copy(info.Scale);
 	}
 
+	public void addFlyStraightAnimator(Vector3d start, Vector3d end, 
+			double time, boolean loop, boolean pingpong){
+		nativeAddFlyStraightAnimator(start.x, start.y, start.z, 
+				end.x, end.y, end.z, time, loop, pingpong, getId());
+	}
+
+	public void addFlyCircleAnimator(Vector3d center, double radius,
+			double speed, Vector3d axis, double startPoint, double radiusEllipsoid){
+		nativeAddFlyCircleAnimator(center.x, center.y, center.z, radius, speed, 
+				axis.x, axis.y, axis.z, startPoint, startPoint, getId());
+	}
+
 	public void addRotationAnimator(Vector3d speed, int animatorId){
 		nativeAddRotationAnimator(speed.x, speed.y, speed.z, getId());
 	}
 	
-	public void addFlyCircleAnimator(Vector3d center, double radius, double speed, Vector3d axis){
-		nativeAddFlyCircleAnimator(center.x, center.y, center.z, radius, speed, axis.x, axis.y, axis.z, getId());
-	}
-	
-	public void addFlyStraightAnimator(Vector3d start, Vector3d end, double time){
-		nativeAddFlyStraightAnimator(start.x, start.y, start.z, end.x, end.y, end.z, time, getId());
-	}
-	
 	public void addDeleteAnimator(int ms){
-		nativeAddDleeteAnimator(ms, getId());
+		nativeAddDeleteAnimator(ms, getId());
 	}
 	
 	//单个去除动画的函数实现所需代码略多，暂不管
@@ -152,6 +135,13 @@ public class SceneNode {
 		mScene.removeNode(this);
 	}	
 	
+	void javaLoadDataAndInit(Vector3d pos, SceneNode parent){
+		mPosition[0] = pos;
+		mParent = parent;
+		mark();
+		mScene.registerNode(this);
+	}
+
 	SceneNode() {
 		this.Id = mScene.getNewId();
 		
@@ -173,29 +163,44 @@ public class SceneNode {
 	
 	int getId() {return Id;}
 	
-	protected final int Id;
-	protected SceneNode mParent = null;
+	protected static Scene mScene;
 	
-	protected boolean mIsVisible = true;;
+	protected final int Id;
+	
+	protected SceneNode mParent = null;
+	protected boolean mIsVisible = true;
 	protected Vector3d []mPosition;
 	protected Vector3d []mRotation;
 	protected Vector3d []mScale;
 	
 	protected int mNodeType;
-	protected static Scene mScene;
-
+	
+	//! transform native method.
 	private native int nativeSetParent(int parent, int Id);
 	private native int nativeSetVisible(boolean isVisible, int Id);
 	private native int nativeSetRotation(double x, double y, double z, int Id);
 	private native int nativeSetScale(double x, double y, double z, int Id);
 	private native int nativeSetPosition(double x, double y, double z, int Id);
 
-	private native void nativeAddRotationAnimator(double x, double y, double z, int Id);
-	private native void nativeAddFlyCircleAnimator(double cx, double cy, double cz,
-			double radius, double speed, double ax, double ay, double az, int Id);
-	private native void nativeAddFlyStraightAnimator(double sx, double sy, double sz,
-			double dx, double dy, double dz, double time, int Id);
-	private native void nativeAddDleeteAnimator(int ms, int Id);//added in 1.24
+	//! animator native method.
+	private native int nativeAddRotationAnimator(
+			double x, double y, double z, int Id);
+			
+	private native int nativeAddFlyCircleAnimator(
+			double cx, double cy, double cz, double radius, double speed, 
+			double ax, double ay, double az, double startPosition, 
+			double radiusEllipsoid, int Id);
+			
+	private native int nativeAddFlyStraightAnimator(double sx, double sy, double sz,
+			double dx, double dy, double dz, double time, 
+			boolean loop, boolean pingpong, int Id);
+			
+	private native int nativeAddDeleteAnimator(int ms, int Id);
+	private native int nativeRemoveAllAnimator(int Id);
 
-	private native void nativeRemoveAllAnimator(int Id);
+	public class TransformationInfo{
+		public Vector3d Position;
+		public Vector3d Rotation;
+		public Vector3d Scale;
+	}
 }
