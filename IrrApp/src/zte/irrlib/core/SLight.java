@@ -17,7 +17,7 @@ public class SLight {
 	/* Changes the light strength fading over distance.
 	Can also be altered by setting the radius, Attenuation will change to
 	(0,1.f/radius,0). Can be overridden after radius was set. */
-	public Vector3d Attenuation = new Vector3d(1.0, 0, 0);
+	public Vector3d Attenuation = new Vector3d(0, 0.01, 0);
 	
 	//only available for spot light
 	public double OuterCone = 45.0;

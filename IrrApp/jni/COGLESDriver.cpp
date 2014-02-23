@@ -30,6 +30,7 @@ extern int GL_BGRA;
 
 #ifdef _IRR_COMPILE_WITH_ANDROID_DEVICE_
 #include <android/log.h>
+#include "android-global.h"
 #endif
 
 namespace irr
@@ -1753,16 +1754,18 @@ void COGLES1Driver::setBasicRenderStates(const SMaterial& material, const SMater
 			color[1] = material.AmbientColor.getGreen() * inv;
 			color[2] = material.AmbientColor.getBlue() * inv;
 			color[3] = material.AmbientColor.getAlpha() * inv;
+			//LOGD("%f, %f, %f, %f", color[0], color[1], color[2], color[3]);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, color);
 		}
-
-		if ((material.ColorMaterial != video::ECM_DIFFUSE) &&
-			(material.ColorMaterial != video::ECM_DIFFUSE_AND_AMBIENT))
+		//LOGD("%d %d, material.Color%d", video::ECM_DIFFUSE, video::ECM_DIFFUSE_AND_AMBIENT, material.ColorMaterial);
+		if (true/*(material.ColorMaterial != video::ECM_DIFFUSE) &&
+			(material.ColorMaterial != video::ECM_DIFFUSE_AND_AMBIENT)*/)
 		{
 			color[0] = material.DiffuseColor.getRed() * inv;
 			color[1] = material.DiffuseColor.getGreen() * inv;
 			color[2] = material.DiffuseColor.getBlue() * inv;
 			color[3] = material.DiffuseColor.getAlpha() * inv;
+			//LOGD("%f, %f, %f, %f", color[0], color[1], color[2], color[3]);
 			glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, color);
 		}
 

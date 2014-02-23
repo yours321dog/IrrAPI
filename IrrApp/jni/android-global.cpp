@@ -16,12 +16,11 @@ ISceneManager* smgr = 0;
 
 int gWindowWidth = 640;
 int gWindowHeight = 480;
-stringc gSdCardPath = "/sdcard/";
-SColor backColor = SColor(255,180,180,255);
+SColor backColor = SColor(255,0,0,0);
 
 bool _isInit = false;
 char _extPrefix[] = "<external>";
-char _builtInFontPath[] = "/sdcard/irrmedia/bigfont.png";
+char _builtInFontPath[128] = "";
 ITexture *_extTex = 0;
 
 static jclass cls_color4i;
@@ -42,7 +41,6 @@ void setVector3dFromvector3df(JNIEnv *env, jobject light, jfieldID id, const vec
 	env->SetDoubleField(obj, id_vx, vec.X);
 	env->SetDoubleField(obj, id_vy, vec.Y);
 	env->SetDoubleField(obj, id_vz, vec.Z);
-	LOGD("%f, %f, %f", vec.X, vec.Y, vec.Z);
 }
 
 void setColor3iFromSColorf(JNIEnv *env, jobject light, jfieldID id, const SColorf& color)

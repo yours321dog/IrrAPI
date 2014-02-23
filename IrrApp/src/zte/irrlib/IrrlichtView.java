@@ -5,12 +5,12 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
-import zte.irrapp.WLog;
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 
 public class IrrlichtView extends GLSurfaceView {
 
@@ -28,6 +28,19 @@ public class IrrlichtView extends GLSurfaceView {
 	
 	public void setRecommendEGLConfigChooser(int sampleLevel){
 		setEGLConfigChooser(new RecommedEGLConfigChooser(mRenderType, sampleLevel));
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event){
+		if (event.getAction() == MotionEvent.ACTION_DOWN){
+			Event e = new Event(mEngine);
+			e.EventType = Event.KEY_DOWN_EVENT;
+			e.motionEvent = event;
+			
+			queueEvent(e);
+			return true;
+		}
+		return super.onTouchEvent(event);
 	}
 	
 	public void enableGLES2(boolean flag){

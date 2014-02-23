@@ -33,30 +33,7 @@ extern "C"
 			WARN_NODE_NOT_FOUND(id, SetTouchable);
 			return -1;
 		}
-		/*create a selector optimized by an octree 
-		selector = smgr->createOctreeTriangleSelector(
-				node->getMesh(), node, 128);
-		*/
-		/* for animateSceneNode
-		if(flag){
-			scene::ITriangleSelector* selector = smgr->createTriangleSelector(node);
-			node->setTriangleSelector(selector);
-			selector->drop();
-		}
-		else{
-			node->setTriangleSelector(0);
-		}
-		*/
-		/*for meshSceneNode
-		if(flag){
-			scene::ITriangleSelector* selector = smgr->createTriangleSelector(node->getMesh(),node);
-			node->setTriangleSelector(selector);
-			selector->drop();
-		}
-		else{
-			node->setTriangleSelector(0);
-		}
-		*/
+		
 		if(flag){
 			scene::ITriangleSelector* selector = smgr->createTriangleSelector(((IMeshSceneNode*)node)->getMesh(),node);
 			node->setTriangleSelector(selector);
@@ -246,5 +223,17 @@ extern "C"
 		}	
 		node->setMaterialTexture(mId, _extTex);
 		return 0;
+	}
+	
+	int Java_zte_irrlib_scene_MeshSceneNode_nativeGetMaterialCount(
+		JNIEnv *env, jobject defaultObj, jint id)
+	{
+		ISceneNode* node = smgr->getSceneNodeFromId(id);
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetMediaTexture);
+			return -1;
+		}	
+		return node->getMaterialCount();
 	}
 }

@@ -124,12 +124,13 @@ extern "C"
 		lightData.Direction = createvector3dfFromVector3d(env, env->GetObjectField(light_obj, id_field[8]));
 		lightData.Radius = (f32)env->GetDoubleField(light_obj, id_field[9]);
 		
-		LOGE("%f, %f, %f", lightData.AmbientColor.r, lightData.AmbientColor.g, lightData.AmbientColor.b);
+/*		LOGE("%f, %f, %f", lightData.AmbientColor.r, lightData.AmbientColor.g, lightData.AmbientColor.b);
 		LOGE("%f, %f, %f", lightData.DiffuseColor.r, lightData.DiffuseColor.g, lightData.DiffuseColor.b);
 		LOGE("%f, %f, %f", lightData.SpecularColor.r, lightData.SpecularColor.g, lightData.SpecularColor.b);
 		LOGE("%f, %f, %f", lightData.Attenuation.X, lightData.Attenuation.Y, lightData.Attenuation.Z);
 		LOGE("%f, %f, %f", lightData.Direction.X, lightData.Direction.Y, lightData.Direction.Z);
 		LOGE("%f, %f, %f, %f", lightData.InnerCone, lightData.OuterCone, lightData.Falloff, lightData.Radius);
+*/
 	}
 	
 	int Java_zte_irrlib_scene_LightSceneNode_nativeGetLightData(
@@ -173,12 +174,14 @@ extern "C"
 		env->SetDoubleField(light_obj, id_field[7], lightData.Falloff);
 		setVector3dFromvector3df(env, light_obj, id_field[8], lightData.Direction);
 		env->SetDoubleField(light_obj, id_field[9], lightData.Radius);
-		LOGE("%f, %f, %f", lightData.AmbientColor.r, lightData.AmbientColor.g, lightData.AmbientColor.b);
+		
+/*		LOGE("%f, %f, %f", lightData.AmbientColor.r, lightData.AmbientColor.g, lightData.AmbientColor.b);
 		LOGE("%f, %f, %f", lightData.DiffuseColor.r, lightData.DiffuseColor.g, lightData.DiffuseColor.b);
 		LOGE("%f, %f, %f", lightData.SpecularColor.r, lightData.SpecularColor.g, lightData.SpecularColor.b);
 		LOGE("%f, %f, %f", lightData.Attenuation.X, lightData.Attenuation.Y, lightData.Attenuation.Z);
 		LOGE("%f, %f, %f", lightData.Direction.X, lightData.Direction.Y, lightData.Direction.Z);
 		LOGE("%f, %f, %f, %f", lightData.InnerCone, lightData.OuterCone, lightData.Falloff, lightData.Radius);
+*/
 	}
 }
 

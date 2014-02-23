@@ -3,7 +3,7 @@ package zte.irrlib;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-public class Event {
+public class Event implements Runnable{
 	
 	public static final int NULL_EVENT = 0x00;
 
@@ -13,11 +13,19 @@ public class Event {
 	public int EventType = NULL_EVENT;
 	
 	//key event;
-	public int KeyCode;
-	public KeyEvent KeyEvent;
+	public int keyCode;
+	public KeyEvent keyEvent;
 	
 	//touch event;
-	public MotionEvent MotionEvent;
+	public MotionEvent motionEvent;
+
+	public Event(Engine engine){
+		mEngine = engine;
+	}
 	
-	//to be continue;
+	public void run() {
+		mEngine.setEvent(this);
+	}
+	
+	private Engine mEngine;
 }

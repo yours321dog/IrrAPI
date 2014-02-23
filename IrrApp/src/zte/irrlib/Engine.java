@@ -29,13 +29,12 @@ public class Engine{
 		mRenderer = renderer;
 	}
 	
-	public void setFontPath(String path)
-	{
-		nativeSetFontPath(path);
-	}
-	
 	public void setRenderType(int type){
 		mRenderType = type;
+	}
+	
+	public void setEvent(Event event){
+		mEvent = event;
 	}
 	
 	public Scene getScene(){
@@ -50,12 +49,16 @@ public class Engine{
 		return mScene.getRenderSize();
 	}
 	
+	public Event getEvent(){
+		return mEvent;
+	}
+	
 	public double getFPS(){
 		//to be implemented.
 		return nativeGetFPS();
 	}
 	
-	public synchronized boolean queueEvent(Event event){
+	/*public synchronized boolean queueEvent(Event event){
 		//max event number is 255;
 		if (mEventQueue.size() < 255){
 			mEventQueue.add(event);
@@ -65,16 +68,16 @@ public class Engine{
 			Log.w(TAG, "event queue is full.");
 			return false;
 		}
-	}
+	}*/
 	
-	public synchronized Event getEvent(){
+	/*public synchronized Event getEvent(){
 		if (mEventQueue.size() <= 0){
 			return null;
 		}
 		else{
 			return mEventQueue.remove(0);
 		}
-	}
+	}*/
 	
 	public synchronized void onDestroy(){
 		if (mIsInit) javaClear();
@@ -134,6 +137,7 @@ public class Engine{
 	
 	private static Engine mUniInstance;
 	
+	private Event mEvent;
 	private Scene mScene;
 	private Renderer mRenderer;
 	private int mRenderType = EGL10Ext.EGL_OPENGL_ES1_BIT;
@@ -142,13 +146,11 @@ public class Engine{
 	private boolean mIsInit;
 	
 	private native int nativeInit(int rendertype, Vector3d vec, Color4i color4, Color3i color3, Rect4i rect);
-	private native void nativeSetFontPath(String path);
 	private native void nativeClear();
 	private native boolean nativeIsInit();
-	
 	private native void nativeResize(int w, int h);
-	
 	private native double nativeGetFPS();
+	
 	native void nativeBeginScene();
 	native void nativeEndScene();
 	

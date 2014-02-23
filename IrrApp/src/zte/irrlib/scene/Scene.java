@@ -19,6 +19,10 @@ public class Scene {
 		mEnableLighting = flag;
 	}
 
+	public void setDefaultFontPath(String path){
+		nativeSetFontPath(getFullPath(path));
+	}
+	
 	public void setResourceDir(String path){
 		mResourceDir = path;
 	}
@@ -159,6 +163,7 @@ public class Scene {
 		}
 		
 		node.javaLoadDataAndInit(pos, parent);
+		node.downloadLightData();
 		return node;
 	}
 	
@@ -356,6 +361,6 @@ public class Scene {
 	//native remove node
 	private native void nativeRemoveNode(int id);
 	private native void nativeClear();
-	
+	private native void nativeSetFontPath(String path);
 	private native int nativeGetMediaTextureId();
 }

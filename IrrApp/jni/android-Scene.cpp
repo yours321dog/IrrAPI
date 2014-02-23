@@ -449,6 +449,14 @@ extern "C"
 			return getOpenGLESTextureID(_extTex);
 		}
 	}
+		
+	void Java_zte_irrlib_scene_Scene_nativeSetFontPath(
+		JNIEnv *env, jobject defaultObj, jstring path)
+	{
+		const char* txt = env->GetStringUTFChars(path, 0);
+		strcpy(_builtInFontPath, txt);
+		env->ReleaseStringUTFChars(path, txt);
+	}
 }
 	
 	

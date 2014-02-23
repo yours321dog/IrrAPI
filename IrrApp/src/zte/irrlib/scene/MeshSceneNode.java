@@ -10,8 +10,6 @@ public class MeshSceneNode extends SceneNode{
 		mNodeType = TYPE_MESH;
 	}
 	
-	protected boolean mIsBBoxVisible = false;
-	
 	public void setTouchable(boolean flag){
 		nativeSetTouchable(flag, getId());
 	}
@@ -56,19 +54,18 @@ public class MeshSceneNode extends SceneNode{
 		return nativeAddTextureAnimator(path, timePerFrame, loop, getId());
 	}
 	
-	public boolean isBBoxVisible(){
-		return mIsBBoxVisible;
+	public void setBBoxVisibility(boolean flag){
+		nativeSetBBoxVisibility(flag, getId());
 	}
 	
-	public void setBBoxVisibility(boolean flag){
-		mIsBBoxVisible = flag;
-		nativeSetBBoxVisibility(flag, getId());
+	public int getMaterialCount(){
+		return nativeGetMaterialCount(getId());
 	}
 	
 	protected native int nativeSetTouchable(boolean flag, int Id);
 	protected native int nativeSetBBoxVisibility(boolean flag, int Id);
 	
-	protected native int nativeSetSmoothShade(boolean flag, int materialId, int id);
+	protected native int nativeSetSmoothShade(boolean flag, int materialId, int Id);
 	protected native int nativeSetAmbientColor(int r, int g, int b, int a, int materialId, int Id);
 	protected native int nativeSetDiffuseColor(int r, int g, int b, int a, int materialId, int Id);
 	protected native int nativeSetEmissiveColor(int r, int g, int b, int a, int materialId, int Id);
@@ -77,6 +74,7 @@ public class MeshSceneNode extends SceneNode{
 	
 	protected native int nativeSetTexture(String path, int materialId, int Id);
 	protected native int nativeAddTextureAnimator(String[] path, int timePerFrame, boolean loop, int Id);
-	private native int nativeSetBitmapTexture(String name, Bitmap bitmap, int materialId, int id);
-	private native int nativeSetMediaTexture(int materialId, int id);
+	private native int nativeSetBitmapTexture(String name, Bitmap bitmap, int materialId, int Id);
+	private native int nativeSetMediaTexture(int materialId, int Id);
+	private native int nativeGetMaterialCount(int Id);
 }
