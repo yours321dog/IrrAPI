@@ -26,6 +26,9 @@ SColor createSColorFromColor3i(JNIEnv *env, jobject color);
 SColorf createSColorfFromColor3i(JNIEnv *env, jobject color);
 vector3df createvector3dfFromVector3d(JNIEnv *env, jobject vec);
 
+void setVector3dFromvector3df(JNIEnv *env, jobject light, jfieldID id, const vector3df& vec);
+void setColor3iFromSColorf(JNIEnv *env, jobject light, jfieldID id, const SColorf& color);
+
 #define LOG_TAG "irrlicht engine"
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)

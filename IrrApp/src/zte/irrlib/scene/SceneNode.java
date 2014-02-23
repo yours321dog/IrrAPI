@@ -118,7 +118,7 @@ public class SceneNode {
 				axis.x, axis.y, axis.z, startPoint, startPoint, getId());
 	}
 
-	public void addRotationAnimator(Vector3d speed, int animatorId){
+	public void addRotationAnimator(Vector3d speed){
 		nativeAddRotationAnimator(speed.x, speed.y, speed.z, getId());
 	}
 	

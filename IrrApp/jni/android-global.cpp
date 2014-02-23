@@ -21,7 +21,7 @@ SColor backColor = SColor(255,180,180,255);
 
 bool _isInit = false;
 char _extPrefix[] = "<external>";
-char _builtInFontPath[] = "/storage/sdcard0/irrmedia/bigfont.png";
+char _builtInFontPath[] = "/sdcard/irrmedia/bigfont.png";
 ITexture *_extTex = 0;
 
 static jclass cls_color4i;
@@ -36,10 +36,27 @@ static jfieldID id_left, id_top, id_right, id_bottom;
 static jclass cls_vector3d;
 static jfieldID id_vx, id_vy, id_vz;
 
+void setVector3dFromvector3df(JNIEnv *env, jobject light, jfieldID id, const vector3df& vec)
+{
+	jobject obj = env->GetObjectField(light, id);
+	env->SetDoubleField(obj, id_vx, vec.X);
+	env->SetDoubleField(obj, id_vy, vec.Y);
+	env->SetDoubleField(obj, id_vz, vec.Z);
+	LOGD("%f, %f, %f", vec.X, vec.Y, vec.Z);
+}
+
+void setColor3iFromSColorf(JNIEnv *env, jobject light, jfieldID id, const SColorf& color)
+{
+	jobject obj = env->GetObjectField(light, id);
+	env->SetIntField(obj, id_red3, color.r*255);
+	env->SetIntField(obj, id_green3, color.g*255);
+	env->SetIntField(obj, id_blue3, color.b*255);
+}
+
 SColorf createSColorfFromColor3i(JNIEnv *env, jobject color)
 {
-	return SColorf(1.0, env->GetIntField(color, id_red)/255.0, 
-			env->GetIntField(color, id_green)/255.0, env->GetIntField(color, id_blue)/255.0);
+	return SColorf(env->GetIntField(color, id_red3)/255.0, env->GetIntField(color, id_green3)/255.0,
+			 env->GetIntField(color, id_blue3)/255.0, 1.0);
 }
 
 SColor createSColorFromColor3i(JNIEnv *env, jobject color)
@@ -62,8 +79,8 @@ recti createrectiFromRect4i(JNIEnv *env, jobject rec)
 
 vector3df createvector3dfFromVector3d(JNIEnv *env, jobject vec)
 {
-	return vector3df(env->GetIntField(vec, id_vx), env->GetIntField(vec, id_vy),
-			env->GetIntField(vec, id_vz));
+	return vector3df(env->GetDoubleField(vec, id_vx), env->GetDoubleField(vec, id_vy),
+			env->GetDoubleField(vec, id_vz));
 }
 
 void initJNIInfo(JNIEnv *env, jobject vector, jobject color4, jobject color3, jobject rect)

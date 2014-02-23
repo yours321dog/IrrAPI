@@ -21,7 +21,7 @@ public class IrrActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_irr);
 		mDemo = (IrrlichtView)findViewById(R.id.irrview);
-		mDemo.setRecommendEGLConfigChooser(0);
+		mDemo.setRecommendEGLConfigChooser(8);
 		mRenderer = new DemoRenderer();
 		mDemo.setEngineRenderer(mRenderer);
 		

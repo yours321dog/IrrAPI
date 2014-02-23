@@ -16,6 +16,10 @@ public class MeshSceneNode extends SceneNode{
 		nativeSetTouchable(flag, getId());
 	}
 	
+	public void setSmoothShade(boolean flag, int materialId){
+		nativeSetSmoothShade(flag, materialId, getId());
+	}
+	
 	public void setAmbientColor(Color4i color, int materialId) {
 		nativeSetAmbientColor(color.r(), color.g(), color.b(), color.a(), materialId, getId());
 	}
@@ -58,20 +62,21 @@ public class MeshSceneNode extends SceneNode{
 	
 	public void setBBoxVisibility(boolean flag){
 		mIsBBoxVisible = flag;
-		nativeSetBBoxVisibility(flag);
+		nativeSetBBoxVisibility(flag, getId());
 	}
 	
-	protected native void nativeSetTouchable(boolean flag, int Id);
-	protected native void nativeSetBBoxVisibility(boolean flag);
+	protected native int nativeSetTouchable(boolean flag, int Id);
+	protected native int nativeSetBBoxVisibility(boolean flag, int Id);
 	
-	protected native void nativeSetAmbientColor(int r, int g, int b, int a, int materialId, int Id);
-	protected native void nativeSetDiffuseColor(int r, int g, int b, int a, int materialId, int Id);
-	protected native void nativeSetEmissiveColor(int r, int g, int b, int a, int materialId, int Id);
-	protected native void nativeSetSpecularColor(int r, int g, int b, int a, int materialId, int Id);
-	protected native void nativeSetShininess(double shininess, int materialId, int Id);
+	protected native int nativeSetSmoothShade(boolean flag, int materialId, int id);
+	protected native int nativeSetAmbientColor(int r, int g, int b, int a, int materialId, int Id);
+	protected native int nativeSetDiffuseColor(int r, int g, int b, int a, int materialId, int Id);
+	protected native int nativeSetEmissiveColor(int r, int g, int b, int a, int materialId, int Id);
+	protected native int nativeSetSpecularColor(int r, int g, int b, int a, int materialId, int Id);
+	protected native int nativeSetShininess(double shininess, int materialId, int Id);
 	
 	protected native int nativeSetTexture(String path, int materialId, int Id);
 	protected native int nativeAddTextureAnimator(String[] path, int timePerFrame, boolean loop, int Id);
 	private native int nativeSetBitmapTexture(String name, Bitmap bitmap, int materialId, int id);
-	private native void nativeSetMediaTexture(int materialId, int id);
+	private native int nativeSetMediaTexture(int materialId, int id);
 }

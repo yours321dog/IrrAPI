@@ -1,5 +1,6 @@
  package zte.irrlib.scene;
 
+import zte.irrapp.WLog;
 import zte.irrlib.core.SLight;
 
 public class LightSceneNode extends SceneNode {
@@ -9,8 +10,12 @@ public class LightSceneNode extends SceneNode {
 		LightData = new SLight();
 	}
 	
-	public void UpdateLightData(){
+	public void upLoadLightData(){
 		nativeSendLightData(LightData, getId());
+	}
+	
+	public void downloadLightData(){
+		nativeGetLightData(LightData, getId());
 	}
 	
 	public int getLightType(){
@@ -20,4 +25,5 @@ public class LightSceneNode extends SceneNode {
 	public SLight LightData;
 	
 	private native int nativeSendLightData(SLight data, int id);
+	private native int nativeGetLightData(SLight data, int id);
 }

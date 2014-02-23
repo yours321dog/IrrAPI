@@ -2,23 +2,37 @@
 #include <irrlicht.h>
 #include "android-global.h"
 
+#ifdef LOG_TAG
+#undef LOG_TAG
+#endif
+
+#define LOG_TAG "NativeMeshNode"
+
 extern "C"
 {
-	void Java_zte_irrlib_scene_MeshSceneNode_nativeSetBBoxVisibility(
-		JNIEnv *env, jobject defaultObj, jboolean flag)
+	int Java_zte_irrlib_scene_MeshSceneNode_nativeSetBBoxVisibility(
+		JNIEnv *env, jobject defaultObj, jboolean flag, jint id)
 	{
-		/*
-		scene::IMeshSceneNode* node = 
+		IMeshSceneNode* node = 
 			(IMeshSceneNode*)smgr->getSceneNodeFromId(id);
-		node->getgetBoundingBox();
-		*/
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetBBoxVisibility);
+			return -1;
+		}
+		node->setDebugDataVisible(flag);
+		return 0;
 	}
 	
-		void Java_zte_irrlib_scene_MeshSceneNode_nativeSetTouchable(
+	int Java_zte_irrlib_scene_MeshSceneNode_nativeSetTouchable(
 		JNIEnv *env, jobject defaultObj, jboolean flag, jint id)
 	{
 		scene::ISceneNode* node = smgr->getSceneNodeFromId(id);
-		if(!node) return;
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetTouchable);
+			return -1;
+		}
 		/*create a selector optimized by an octree 
 		selector = smgr->createOctreeTriangleSelector(
 				node->getMesh(), node, 128);
@@ -51,46 +65,92 @@ extern "C"
 		else{
 			node->setTriangleSelector(0);
 		}
+		return 0;
 	}
 
-	void Java_zte_irrlib_scene_MeshSceneNode_nativeSetAmbientColor(
+	int Java_zte_irrlib_scene_MeshSceneNode_nativeSetSmoothShade(
+		JNIEnv *env, jobject defaultObj,jboolean flag, jint materialID, jint id)
+	{
+		scene::ISceneNode* node =
+			(ISceneNode*)smgr->getSceneNodeFromId(id);
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetSmoothShade);
+			return -1;
+		}
+		node->getMaterial(materialID).GouraudShading = flag;
+		return 0;
+	}
+
+	
+	int Java_zte_irrlib_scene_MeshSceneNode_nativeSetAmbientColor(
 		JNIEnv *env, jobject defaultObj, jint r, jint g, jint b, jint a, jint materialID, jint id)
 	{
 		scene::ISceneNode* node =
 			(ISceneNode*)smgr->getSceneNodeFromId(id);
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetAmbientColor);
+			return -1;
+		}		
 		node->getMaterial(materialID).AmbientColor = video::SColor(a,r,g,b);
+		return 0;
 	}
 
-	void Java_zte_irrlib_scene_MeshSceneNode_nativeSetDiffuseColor(
+	int Java_zte_irrlib_scene_MeshSceneNode_nativeSetDiffuseColor(
 		JNIEnv *env, jobject defaultObj, jint r, jint g, jint b, jint a, jint materialID, jint id)
 	{
 		scene::ISceneNode* node =
 			(ISceneNode*)smgr->getSceneNodeFromId(id);
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetDiffuseColor);
+			return -1;
+		}		
 		node->getMaterial(materialID).DiffuseColor = video::SColor(a,r,g,b);
+		return 0;
 	}
 
-	void Java_zte_irrlib_scene_MeshSceneNode_nativeSetEmissiveColor(
+	int Java_zte_irrlib_scene_MeshSceneNode_nativeSetEmissiveColor(
 		JNIEnv *env, jobject defaultObj, jint r, jint g, jint b, jint a, jint materialID, jint id)
 	{
 		scene::ISceneNode* node =
 			(ISceneNode*)smgr->getSceneNodeFromId(id);
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetEmissiveColor);
+			return -1;
+		}			
 		node->getMaterial(materialID).EmissiveColor = video::SColor(a,r,g,b);
+		return 0;
 	}
 
-	void Java_zte_irrlib_scene_MeshSceneNode_nativeSetSpecularColor(
+	int Java_zte_irrlib_scene_MeshSceneNode_nativeSetSpecularColor(
 		JNIEnv *env, jobject defaultObj, jint r, jint g, jint b, jint a, jint materialID, jint id)
 	{
 		scene::ISceneNode* node =
 			(ISceneNode*)smgr->getSceneNodeFromId(id);
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetSpecularColor);
+			return -1;
+		}				
 		node->getMaterial(materialID).SpecularColor = video::SColor(a,r,g,b);
+		return 0;
 	}
 
-	void Java_zte_irrlib_scene_MeshSceneNode_nativeSetShininess(
+	int Java_zte_irrlib_scene_MeshSceneNode_nativeSetShininess(
 		JNIEnv *env, jobject defaultObj, jdouble shininess, jint materialID, jint id)
 	{
 		scene::ISceneNode* node =
 			(ISceneNode*)smgr->getSceneNodeFromId(id);
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetShininess);
+			return -1;
+		}	
 		node->getMaterial(materialID).Shininess = (float)shininess;
+		return 0;
 	}
 
 	int Java_zte_irrlib_scene_MeshSceneNode_nativeSetTexture(
@@ -101,7 +161,11 @@ extern "C"
 
 		scene::ISceneNode* node =
 			(ISceneNode*)smgr->getSceneNodeFromId(id);
-		if(!node) return -1;
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetTexture);
+			return -1;
+		}	
 		node->getMaterial(materialID).setTexture(
 			0,driver->getTexture(file.c_str()));
 
@@ -114,7 +178,7 @@ extern "C"
 		return 0;
 	}
 	
-		int Java_zte_irrlib_scene_MeshSceneNode_nativeSetBitmapTexture(
+	int Java_zte_irrlib_scene_MeshSceneNode_nativeSetBitmapTexture(
 		JNIEnv *env, jobject defaultObj, jstring jname, 
 		jobject jbitmap, jint materialID, jint id)
 	{
@@ -127,8 +191,11 @@ extern "C"
 		scene::ISceneNode* node =
 			(ISceneNode*)smgr->getSceneNodeFromId(id);
 			
-		if(!node) 
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetBitmapTexture);
 			return -1;
+		}	
 			
 		ITexture *tex = driver->addTexture(name, image, 0);
 		node->setMaterialTexture(0, tex);
@@ -141,7 +208,11 @@ extern "C"
 	{
 		scene::ISceneNode* node =
 			(ISceneNode*)smgr->getSceneNodeFromId(id);
-		if(!node) return -1;
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, AddTextureAnimator);
+			return -1;
+		}	
 		int len = env->GetArrayLength(array_obj);
 		if(len<=0 || !node) return -1;
 
@@ -164,11 +235,16 @@ extern "C"
 	
 	
 	
-	void Java_zte_irrlib_scene_MeshSceneNode_nativeSetMediaTexture(
+	int Java_zte_irrlib_scene_MeshSceneNode_nativeSetMediaTexture(
 		JNIEnv *env, jobject defaultObj, jint mId, jint id)
 	{
 		ISceneNode* node = smgr->getSceneNodeFromId(id);
-		if (!node) return;
+		if (!node)
+		{
+			WARN_NODE_NOT_FOUND(id, SetMediaTexture);
+			return -1;
+		}	
 		node->setMaterialTexture(mId, _extTex);
+		return 0;
 	}
 }
