@@ -69,7 +69,7 @@ public class DemoRenderer implements Renderer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}*/
-		model = scene.addMeshSceneNode("mytv/mytv.b3d", origin, null);
+		model = scene.addMeshSceneNode("models/axis.obj", origin, null);
 		
 		model.addRotationAnimator(new Vector3d(0,0.5,0.0));
 		model.setSmoothShade(true, 0);
@@ -82,7 +82,7 @@ public class DemoRenderer implements Renderer {
 		light.LightData.AmbientColor = new Color3i(0, 0, 0);		
 		light.LightData.DiffuseColor = new Color3i(0, 0, 0);
 		light.LightData.SpecularColor = new Color3i(0, 0, 0);
-		light.LightData.DiffuseColor = new Color3i(0x7f, 0x00, 0x7f);
+		light.LightData.DiffuseColor = new Color3i(0x7f, 0x7f, 0x7f);
 		light.upLoadLightData();
 	}
 	
