@@ -29,6 +29,8 @@ vector3df createvector3dfFromVector3d(JNIEnv *env, jobject vec);
 void setVector3dFromvector3df(JNIEnv *env, jobject light, jfieldID id, const vector3df& vec);
 void setColor3iFromSColorf(JNIEnv *env, jobject light, jfieldID id, const SColorf& color);
 
+void setgSdCardPath(JNIEnv* env, jstring newpath);
+
 #define LOG_TAG "irrlicht engine"
 
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)

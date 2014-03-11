@@ -152,8 +152,10 @@ namespace irr
 
             if ( !linkProgram() )
             {
+            	os::Printer::log( "Why??",ELL_INFORMATION );
                 os::Printer::log( "Error linking fixed pipeline shader program.", ELL_ERROR );
             }
+			else os::Printer::log( "I know!" );
 
             if ( registerMaterial )
                 outMaterialTypeNr = Driver->addMaterialRenderer( this );

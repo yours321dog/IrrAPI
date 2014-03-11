@@ -1,4 +1,5 @@
 #include <sys/time.h>
+#include <string.h>
 #include "android-global.h"
 #include <android/bitmap.h>
 #include "COGLESTexture.h"
@@ -16,7 +17,8 @@ ISceneManager* smgr = 0;
 
 int gWindowWidth = 640;
 int gWindowHeight = 480;
-SColor backColor = SColor(255,0,0,0);
+stringc gSdCardPath;
+SColor backColor = SColor(255,150,150,150);
 
 bool _isInit = false;
 char _extPrefix[] = "<external>";
@@ -164,6 +166,13 @@ IImage* createImageFromBitmap(JNIEnv* env, jobject jbitmap)
 		dimension2d<u32>(bitmapInfo.width, bitmapInfo.height), pixels);
 		
 	return image;
+}
+
+void setgSdCardPath( JNIEnv* env, jstring newpath )
+{
+	const char* text = env->GetStringUTFChars(newpath, 0);
+	gSdCardPath = text;
+	env->ReleaseStringUTFChars( newpath, text );
 }
 
 //not safe, will cause fatal error when it is not a opengles texture.

@@ -4,11 +4,17 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in Irrlicht.h
 #include "COGLES2FixedPipelineShader.h"
+#include <android/log.h>
+#include <Irrlicht.h>
+#include <string.h>
+#include <jni.h>
 
 #ifdef _IRR_COMPILE_WITH_OGLES2_
 
 #include "COGLES2SLMaterialRenderer.h"
 #include "COGLES2Utils.h"
+
+extern irr::core::stringc gSdCardPath;
 
 namespace irr
 {
@@ -22,15 +28,15 @@ namespace irr
             "uWorldMatrix",
             "uNormalize",
             "uEyePos",
-            "uUseLight",
-            "uLightPosition",
-            "uLightAmbient",
-            "uLightDiffuse",
-            "uLightSpecular",
-            "uLightDirection",
-            "uLightAttenuation",
-            "uLightExponent",
-            "uLightCutoff",
+            "uUseLi[0]",
+            "uLiPos[0]",
+            "uLiAmb[0]",
+            "uLiDif[0]",
+            "uLiSpe[0]",
+            "uLiDir[0]",
+            "uLightAttenuation[0]",
+            "uLightExponent[0]",
+            "uLiCutoff[0]",
             "uAmbientColor",
             "uLighting",
             "uMaterialAmbient",
@@ -39,9 +45,9 @@ namespace irr
             "uMaterialSpecular",
             "uMaterialShininess",
             "uColorMaterial",
-            "uUseTexture",
-            "uTextureMatrix",
-            "uUseTexMatrix",
+            "uUseTexture[0]",
+            "uTextureMatrix[0]",
+            "uUseTexMatrix[0]",
             "uClip",
             "uClipPlane",
             "uAlphaTest",
@@ -57,8 +63,6 @@ namespace irr
             0
         };
 
-        const c8 VertexShaderFile[] = "/sdcard/Irrlicht/COGLES2FixedPipeline.vsh";
-        const c8 FragmentShaderFile[] = "/sdcard/Irrlicht/COGLES2FixedPipeline.fsh";
 
         COGLES2FixedPipelineShader::COGLES2FixedPipelineShader( video::COGLES2Driver *driver, io::IFileSystem* fs )
                 : COGLES2SLMaterialRenderer( driver, fs, 0, 0, sBuiltInShaderUniformNames, UNIFORM_COUNT ), Normalize( 0 ), AlphaTest( 0 ), AlphaValue( 0.f ),
@@ -66,6 +70,10 @@ namespace irr
                 ColorMaterial( 0 ), MaterialShininess( 0.f ), RenderMode( EMT_SOLID )
         {
             s32 dummy;
+			strcpy(VertexShaderFile, gSdCardPath.c_str());
+			strcat(VertexShaderFile,"/Irrlicht/COGLES2FixedPipeline.vsh");
+			strcpy( FragmentShaderFile, gSdCardPath.c_str());
+			strcat( FragmentShaderFile,"/Irrlicht/COGLES2FixedPipeline.fsh");
             initFromFiles( dummy, VertexShaderFile, FragmentShaderFile, false );
             initData();
         };
@@ -127,6 +135,7 @@ namespace irr
 
             //statusOk &= setVertexShaderConstant( "uUseTexture", ( f32* )UseTexture, MAX_TEXTURE_UNITS );
             setUniform( USE_TEXTURE, UseTexture, MAX_TEXTURE_UNITS );
+            //glUniform1iv(USE_TEXTURE, MAX_TEXTURE_UNITS, UseTexture);
             //statusOk &= setVertexShaderConstant( "uUseTexMatrix", ( f32* )UseTexMatrix, MAX_TEXTURE_UNITS );
             setUniform( USE_TEXTURE_MATRIX, UseTexMatrix, MAX_TEXTURE_UNITS );
             //statusOk &= setVertexShaderConstant( "uTextureMatrix", ( f32* )TextureMatrix, MAX_TEXTURE_UNITS * 16 );
@@ -169,10 +178,12 @@ namespace irr
                                 break;
                         }
 
+
                         LightAmbient[i]  = light.AmbientColor;
-                        LightDiffuse[i]  = light.DiffuseColor;
+                        LightDiffuse[i]  = light.DiffuseColor;;
                         LightSpecular[i] = light.SpecularColor;
                         LightAttenuation[i] = light.Attenuation;
+
                     }
                     else
                     {
@@ -189,6 +200,7 @@ namespace irr
                 //statusOk &= setVertexShaderConstant( "uLightAmbient", ( f32* )LightAmbient,     MAX_LIGHTS * 4 );
                 setUniform( LIGHT_AMBIENT, LightAmbient, MAX_LIGHTS );
                 //statusOk &= setVertexShaderConstant( "uLightDiffuse", ( f32* )LightDiffuse,     MAX_LIGHTS * 4 );
+                //__android_log_print(ANDROID_LOG_INFO, "FixedPipelineShader", "Diffuse2:%f", LightDiffuse[0].getGreen());
                 setUniform( LIGHT_DIFFUSE, LightDiffuse, MAX_LIGHTS );
                 //statusOk &= setVertexShaderConstant( "uLightSpecular", ( f32* )LightSpecular,    MAX_LIGHTS * 4 );
                 setUniform( LIGHT_SPECULAR, LightSpecular, MAX_LIGHTS );

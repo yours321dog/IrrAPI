@@ -13,6 +13,10 @@
 #include "os.h"
 #include "COGLES2Driver.h"
 #include "COGLES2Utils.h"
+#include <jni.h>
+#include <string.h>
+
+extern irr::core::stringc gSdCardPath;
 
 #define MAX_LIGHTS 2
 
@@ -32,8 +36,6 @@ namespace irr
         };
 
 // Irrlicht Engine OGLES2 render path normal map vertex shader
-        const c8 VertexShaderFile[] = "/mnt/sdcard/Irrlicht/COGLES2NormalMap.vsh";
-        const c8 FragmentShaderFile[] = "/mnt/sdcard/Irrlicht/COGLES2NormalMap.fsh";
 
 
 //! Constructor
@@ -71,6 +73,10 @@ namespace irr
             else
             {
                 // compile shaders on our own
+                strcpy(VertexShaderFile, gSdCardPath.c_str());
+				strcat(VertexShaderFile,"/Irrlicht/COGLES2NormalMap.vsh");
+				strcpy( FragmentShaderFile, gSdCardPath.c_str());
+				strcat( FragmentShaderFile,"/Irrlicht/COGLES2NormalMap.fsh");
                 initFromFiles( outMaterialTypeNr, VertexShaderFile, FragmentShaderFile );
                 useProgram();
                 int dummy = 0;

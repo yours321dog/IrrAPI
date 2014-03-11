@@ -4,6 +4,10 @@
 // This file is part of the "Irrlicht Engine".
 // For conditions of distribution and use, see copyright notice in Irrlicht.h
 #include "COGLES2Renderer2D.h"
+#include <jni.h>
+#include <string.h>
+
+extern irr::core::stringc gSdCardPath;
 
 #ifdef _IRR_COMPILE_WITH_OGLES2_
 
@@ -22,8 +26,6 @@ namespace irr
             0
         };
 
-        static const char* vertexShaderFile   = "/mnt/sdcard/Irrlicht/COGLES2Renderer2D.vsh";
-        static const char* fragmentShaderFile = "/mnt/sdcard/Irrlicht/COGLES2Renderer2D.fsh";
 
         COGLES2Renderer2d::COGLES2Renderer2d( irr::video::COGLES2Driver *driver, irr::io::IFileSystem *fs )
                 : COGLES2SLMaterialRenderer( driver, fs, 0, 0, sBuiltInShaderUniformNames, UNIFORM_COUNT )
@@ -32,7 +34,13 @@ namespace irr
             setDebugName( "COGLES2Renderer2d" );
 #endif
             s32 dummy = -1;
-            initFromFiles( dummy, vertexShaderFile, fragmentShaderFile, false );
+
+			strcpy(VertexShaderFile, gSdCardPath.c_str());
+			strcat(VertexShaderFile,"/Irrlicht/COGLES2Renderer2D.vsh");
+			strcpy( FragmentShaderFile, gSdCardPath.c_str());
+			strcat( FragmentShaderFile,"/Irrlicht/COGLES2Renderer2D.fsh");
+
+            initFromFiles( dummy, VertexShaderFile, FragmentShaderFile, false );
             useProgram();
             int texUnit = 0;
             setUniform( TEXTURE_UNIT, &texUnit );

@@ -14,12 +14,13 @@
 #include "COGLES2SLMaterialRenderer.h"
 #include "EVertexAttributes.h"
 
+
 namespace irr
 {
     namespace video
     {
 #define MAX_LIGHTS 8
-#define MAX_TEXTURE_UNITS 4
+#define MAX_TEXTURE_UNITS 2
 
         enum AlphaFunc
         {
@@ -100,6 +101,9 @@ namespace irr
             {
                 float data[16];
             };
+
+			c8 VertexShaderFile[50];
+        	c8 FragmentShaderFile[50];
 
             float Normalize;
 

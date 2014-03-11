@@ -39,6 +39,8 @@ namespace irr
         protected:
 
             bool CompiledShaders;
+			c8 VertexShaderFile[50];
+        	c8 FragmentShaderFile[50];
 
         private:
             enum SHADER_UNIFORM

@@ -1,5 +1,8 @@
 package zte.irrapp;
 
+import java.io.File;
+
+import android.os.Environment;
 import zte.irrlib.Engine;
 import zte.irrlib.Engine.Renderer;
 import zte.irrlib.core.Color3i;
@@ -47,7 +50,13 @@ public class DemoRenderer implements Renderer {
 		left = new Vector3d(-20, 0, 0);
 		right = new Vector3d(20, 0, 0);
 		
-		engine.setResourceDir("/storage/sdcard0/irrmedia/");
+		File sdDir = null; 
+	    boolean sdCardExist = Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);   //判断sd卡是否存在 
+	    if   (sdCardExist)   
+	    {                               
+	    	sdDir = Environment.getExternalStorageDirectory();//获取跟目录 
+	    }
+		engine.setResourceDir(sdDir.toString()+"/irrmedia/");
 		Scene scene = engine.getScene();
 		scene.setDefaultFontPath("bigfont.png");
 		//scene.enableLighting(false);

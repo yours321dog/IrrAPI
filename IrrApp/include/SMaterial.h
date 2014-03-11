@@ -191,8 +191,8 @@ namespace video
 	public:
 		//! Default constructor. Creates a solid, lit material with white colors
 		SMaterial()
-		: MaterialType(EMT_SOLID), AmbientColor(255,255,255,255), DiffuseColor(255,255,255,255),
-			EmissiveColor(0,0,0,0), SpecularColor(255,255,255,255),
+		: MaterialType(EMT_SOLID), AmbientColor(255,111,111,111), DiffuseColor(255,111,111,111),
+			EmissiveColor(0,0,0,0), SpecularColor(255,111,111,111),
 			Shininess(0.0f), MaterialTypeParam(0.0f), MaterialTypeParam2(0.0f), Thickness(1.0f),
 			ZBuffer(ECFN_LESSEQUAL), AntiAliasing(EAAM_SIMPLE), ColorMask(ECP_ALL),
 			ColorMaterial(ECM_DIFFUSE),

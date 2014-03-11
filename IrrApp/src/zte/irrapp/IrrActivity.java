@@ -1,8 +1,10 @@
 
 package zte.irrapp;
 
-import zte.irrlib.Engine; 
+import java.io.IOException;
+
 import zte.irrlib.IrrlichtView;
+import zte.irrlib.Utils;
 import zte.test.irrapp.R;
 import android.app.Activity;
 import android.os.Bundle;
@@ -19,9 +21,12 @@ public class IrrActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Utils utils = new Utils();
+		utils.UtilsInit(getAssets());
 		setContentView(R.layout.activity_irr);
 		mDemo = (IrrlichtView)findViewById(R.id.irrview);
 		mDemo.setRecommendEGLConfigChooser(0);
+		mDemo.enableGLES2(true);
 		mRenderer = new DemoRenderer();
 		mDemo.setEngineRenderer(mRenderer);
 		

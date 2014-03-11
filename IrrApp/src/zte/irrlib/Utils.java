@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import android.content.res.AssetManager;
+import android.os.Environment;
 import android.util.Log;
 
 public class Utils {
@@ -53,4 +54,69 @@ public class Utils {
 			input.close();
 		}
 	}*/
+	
+	public void UtilsInit(AssetManager assetManager){
+		try {
+            unpackOnSdCard(assetManager);
+        } catch (IOException e) {
+            Log.i("Irrlicht", "Error in unpack "+e.getMessage());
+        }
+		try {
+            setSDCardPath();
+            Log.i("new","I want to see!");
+        } catch (IOException e) {
+            Log.i("Irrlicht", "Error in setSdCardPath  "+e.getMessage());
+        }
+	}
+	public void unpackOnSdCard(AssetManager assetManager) throws IOException {
+        if (Environment.getExternalStorageState().compareTo(Environment.MEDIA_MOUNTED)==0) {
+            File sdcard = Environment.getExternalStorageDirectory();
+            String irrlichtPath = sdcard.getAbsoluteFile() + "/Irrlicht/";
+            File irrlichtDir = new File(irrlichtPath);
+            if (irrlichtDir.exists() && !irrlichtDir.isDirectory()) {
+                throw new IOException("Irrlicht exists and is not a directory on SD Card");
+            } else if (!irrlichtDir.exists()) {
+                irrlichtDir.mkdirs();
+            }
+            // Note: /sdcard/irrlicht dir exists
+            String[] filenames = assetManager.list("data");
+            for(String filename:filenames) {
+
+            	Log.i("Irrlicht", "filename"+filename);
+                InputStream inputStream = assetManager.open("data/" + filename);
+                OutputStream outputStream = new FileOutputStream(irrlichtPath + "/" + filename);
+                // copy
+                byte[] buffer = new byte[4096];
+                int length;
+                while ( (length = inputStream.read(buffer)) > 0 ) {
+                    outputStream.write(buffer, 0, length);
+                }
+                outputStream.flush();
+                outputStream.close();
+                inputStream.close();
+            }  
+            	
+        } else {
+            throw new IOException("SD Card not available");
+        }
+
+    }
+	
+	public boolean setSDCardPath() throws IOException{
+		if (Environment.getExternalStorageState().compareTo(Environment.MEDIA_MOUNTED)==0) {
+			File sdcard = Environment.getExternalStorageDirectory();
+			nativeSetSdCardPath(sdcard.getAbsolutePath());
+		}
+		else {
+			throw new IOException("SD Card not available");
+		}
+		return true;
+	}
+	
+	private native void nativeSetSdCardPath(String path);
+	
+	static {
+		System.loadLibrary("irrlicht");
+	}
+
 }
